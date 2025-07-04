@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { yatzyStore } from '../stores/yatzyStore';
+import { yatzyStore } from "../stores/yatzyStore";
 
 const store = yatzyStore();
 </script>
@@ -14,13 +14,13 @@ const store = yatzyStore();
     </div>
     <div>
       <label for="players"
-        >Hvor Mange spillere ?
+        >Hvor Mange spillere?
         <input
           id="players"
           type="number"
           min="1"
           max="4"
-          placeholder="Antall"
+          placeholder="Antall spillere"
           v-model="store.players"
         />
       </label>

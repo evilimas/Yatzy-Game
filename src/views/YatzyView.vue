@@ -52,7 +52,7 @@ const handleRestartGame = () => {
     <ConfettiExplosion
       v-if="showWinnerModal"
       :duration="8000"
-      :particleCount="600"
+      :particleCount="800"
       :colors="['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']"
     />
     <div>

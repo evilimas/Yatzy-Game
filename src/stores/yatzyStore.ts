@@ -3,9 +3,14 @@ import { defineStore } from "pinia";
 import { createNewDiceAndTurn } from "../services/yatzy/diceAndTurns";
 import { scoreFunctions, scoreboardFunctions, emptyScoreboard } from "../services/yatzy/scoreboard";
 import type {
-  Die, YatzyCombination, Scoreboard, DiceAndTurn,
-  DieViewStateStyle, DieViewState,
-  ScoreboardCombination, CompleteScoreboard
+  Die,
+  YatzyCombination,
+  Scoreboard,
+  DiceAndTurn,
+  DieViewStateStyle,
+  DieViewState,
+  ScoreboardCombination,
+  CompleteScoreboard,
 } from "@/services/yatzy/types";
 
 export const yatzyStore = defineStore("scoreBoard", () => {
@@ -49,7 +54,7 @@ export const yatzyStore = defineStore("scoreBoard", () => {
 
   // action
   const placeScore = (combination: string) => {
-    let combo = combination as YatzyCombination;
+    const combo = combination as YatzyCombination;
     const playerIndex = activePlayer.value - 1;
     if (!gameStarted.value || throwCountRemaining.value == 3) return;
     const scoreboard = scoreboards[playerIndex];
@@ -98,7 +103,8 @@ export const yatzyStore = defineStore("scoreBoard", () => {
       completeScoreboard.bonus = scoreboardFunctions.bonus(sb);
       completeScoreboard.total = scoreboardFunctions.total(sb);
       return completeScoreboard;
-    }));
+    })
+  );
 
   // computed
   const isGameFinished = computed(() => {
@@ -121,15 +127,15 @@ export const yatzyStore = defineStore("scoreBoard", () => {
     // const boards = [...scores];
     // boards.sort((a, b) => b.total - a.total);
     // const winner = boards[0];
-    const maxScore = Math.max(...scores.map((score) => score.total));
+    const maxScore = Math.max(...scores.map((score) => score.total ?? 0));
     const winners = scores
       .map((score, index) => ({ player: index + 1, score: score.total }))
       .filter((score) => score.score === maxScore);
 
     return winners.length > 1
       ? `Det er uavgjort mellom spillerne ${winners
-        .map((winner) => winner.player)
-        .join(", ")} med en poengsum på ${maxScore}`
+          .map((winner) => winner.player)
+          .join(", ")} med en poengsum på ${maxScore}`
       : `Spiller ${winners[0].player} vinner med ${maxScore} poeng`;
   };
 

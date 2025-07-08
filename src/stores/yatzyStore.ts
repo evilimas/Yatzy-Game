@@ -1,15 +1,12 @@
 import { ref, computed, reactive, watch } from "vue";
 import { defineStore } from "pinia";
-import { createNewDiceAndTurn } from "../services/yatzy/diceAndTurns";
+
 import { scoreFunctions, scoreboardFunctions, emptyScoreboard } from "../services/yatzy/scoreboard";
 import type {
   Die,
   YatzyCombination,
   Scoreboard,
-  DiceAndTurn,
   DieViewStateStyle,
-  DieViewState,
-  ScoreboardCombination,
   CompleteScoreboard,
 } from "@/services/yatzy/types";
 
@@ -34,8 +31,6 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const dieColor = ref<string[]>(["black", "black", "black", "black", "black"]);
   const throwCountRemaining = ref(3);
   const scoreboards = reactive<Scoreboard[]>(createEmptyScoreboards(players.value));
-  // const diceAndTurn = reactive<DiceAndTurn>(createNewDiceAndTurn())
-  // const diceAndTurn2 = reactive<DiceAndTurn>(new DiceAndTurn2());
 
   // watch
   watch(players, setupScoreboardsFromPlayerCount);
@@ -60,19 +55,10 @@ export const yatzyStore = defineStore("scoreBoard", () => {
     const scoreboard = scoreboards[playerIndex];
     const scoreFunction = scoreFunctions[combo];
     scoreboard[combo] = scoreFunction(dice.value as Die[]);
-    // scoreboard[combo] = scoreFunction(dice.value.filter((d): d is Die => d !== null));
   };
 
   // action
 
-  // const throwDice = () => {
-  // dice.value ? [...dice.value] : (dice.value = new Array(5).fill(0) as Die[]);
-  // for (let i = 0; i < dice.value.length; i++) {
-  //   if (holdDie.value[i]) continue;
-  //   dice.value[i] = Math.floor(Math.random() * 6 + 1) as Die;
-  // }
-  // throwCountRemaining.value--;
-  // };
   const throwDice = () => {
     dice.value = dice.value.map((die, index) =>
       holdDie.value[index] ? die : (Math.floor(Math.random() * 6 + 1) as Die)

@@ -1,11 +1,5 @@
 import { dieValues } from "./types";
-import type {
-  Die,
-  DieFrequencyTable,
-  YatzyCombination,
-  Scoreboard,
-  CompleteScoreboard,
-} from "./types";
+import type { Die, DieFrequencyTable, Scoreboard } from "./types";
 
 const compose =
   (...fns: Function[]) =>

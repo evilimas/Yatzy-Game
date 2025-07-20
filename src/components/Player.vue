@@ -7,19 +7,10 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  player: ["increase" | "decrease"];
-  startGame: [];
-  reStartGame: [];
+  (event: "player", type: "increase" | "decrease"): void;
+  (event: "startGame"): void;
+  (event: "reStartGame"): void;
 }>();
-
-/*
-const emit = defineEmits<{
-  (event: 'player', type: 'increase' | 'decrease'): void;
-  (event: 'startGame'): void;
-  (event: 'reStartGame'): void;
-}>();
-*/
-
 </script>
 <template>
   <div>

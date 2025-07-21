@@ -4,7 +4,7 @@ interface Props {
   players: number;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
   (event: "player", type: "increase" | "decrease"): void;

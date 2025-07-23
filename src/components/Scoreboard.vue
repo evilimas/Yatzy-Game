@@ -6,7 +6,7 @@ interface Props {
   activePlayer: number;
   completeScoreboards: CompleteScoreboard[];
 }
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
   nextTurn: [string | null];
@@ -50,7 +50,7 @@ const emit = defineEmits<{
           </td>
         </tr>
       </tbody>
-    </table>    
+    </table>
   </div>
 </template>
 

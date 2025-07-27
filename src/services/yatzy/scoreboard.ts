@@ -94,8 +94,6 @@ const scoreFunctions = {
 
 const scoreboardFunctions = {
   sum: (board: Scoreboard): number => {
-    // Object.keys(board).slice(0, 6).reduce(
-    //     (sum: number, field: YatzyCombination) => (board[field] ?? 0) + sum, 0);
     return (
       (board.aces ?? 0) +
       (board.twos ?? 0) +

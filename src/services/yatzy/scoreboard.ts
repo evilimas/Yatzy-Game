@@ -121,8 +121,6 @@ const emptyScoreboard = (): Scoreboard => ({
   fours: null,
   fives: null,
   sixes: null,
-  // sum: null,
-  // bonus: null,
   onePair: null,
   twoPairs: null,
   threeOfAKind: null,

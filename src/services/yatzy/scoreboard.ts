@@ -130,7 +130,6 @@ const emptyScoreboard = (): Scoreboard => ({
   house: null,
   chance: null,
   yatzy: null,
-  //total: null,
 });
 
 export { scoreFunctions, scoreboardFunctions, emptyScoreboard, uiLabels, createFrequencyTable };

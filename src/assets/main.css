@@ -1,4 +1,4 @@
-@import './base.css';
+@import "./base.css";
 
 #app {
   max-width: 1280px;
@@ -13,6 +13,20 @@ a,
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
   padding: 3px;
+}
+button {
+  background: #239ba7;
+  border-radius: 8px;
+  padding: 0.5em;
+  cursor: pointer;
+  border: none;
+  color: #0414a7;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+button:hover {
+  background: #1f7a8c;
+  transform: scale(1.05);
 }
 
 @media (hover: hover) {

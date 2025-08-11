@@ -110,9 +110,6 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   // viewstate funksjon
   const winner = () => {
     const scores = completeScoreboards.value;
-    // const boards = [...scores];
-    // boards.sort((a, b) => b.total - a.total);
-    // const winner = boards[0];
     const maxScore = Math.max(...scores.map((score) => score.total ?? 0));
     const winners = scores
       .map((score, index) => ({ player: index + 1, score: score.total }))

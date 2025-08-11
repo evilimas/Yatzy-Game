@@ -19,14 +19,18 @@ const trillText = computed(() => (props.throwCount <= 0 ? "Ferdig" : "Ganger igj
 </script>
 
 <template>
-  <fieldset>
-    <legend>Spiller: {{ activePlayer }}</legend>
+  <fieldset v-show="gameStarted">
+    <legend>
+      Aktiv Spiller:
+      <span class="green">{{ activePlayer }}</span>
+    </legend>
     <div v-show="gameStarted">
       <button @click="emit('throwDice')" :disabled="throwCount <= 0">Trill terninger</button>
       <div>{{ throwCount }} {{ trillText }}</div>
 
       <div class="dice" style="display: flex" :disabled="throwCount === 3">
         <span
+          class="dice-span"
           v-for="dieData of diceObjects"
           :key="dieData.index"
           :style="dieData.style"
@@ -42,7 +46,7 @@ const trillText = computed(() => (props.throwCount <= 0 ? "Ferdig" : "Ganger igj
 </template>
 
 <style scoped>
-span {
+.dice-span {
   font-size: 300%;
   background: lightblue;
   line-height: 90%;

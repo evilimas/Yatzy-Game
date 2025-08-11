@@ -23,7 +23,10 @@ const emit = defineEmits<{
           <th
             v-for="player of players"
             :key="player"
-            :style="{ background: activePlayer === player ? 'darkgreen' : '' }"
+            :style="{
+              background: activePlayer === player ? '#239BA9' : '',
+              color: activePlayer === player ? 'black' : '',
+            }"
           >
             Spiller: {{ player }}
           </th>
@@ -40,7 +43,7 @@ const emit = defineEmits<{
               disabled: scoreBoard[combination] !== null || scoreBoard[combination] == 0,
             }"
             :style="{
-              background: activePlayer === index + 1 ? 'darkblue' : '',
+              background: activePlayer === index + 1 ? '#239BA7' : '',
               cursor: scoreBoard[combination] !== null ? 'not-allowed' : 'pointer',
               opacity: scoreBoard[combination] !== null || scoreBoard[combination] == 0 ? 0.3 : 1,
             }"

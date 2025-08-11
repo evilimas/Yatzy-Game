@@ -6,7 +6,7 @@ const store = yatzyStore();
 
 <template>
   <main>
-    <h1>Velkommen til det beste Yatzy-spillet!</h1>
+    <h1 class="green">Velkommen til det beste Yatzy-spillet!</h1>
     <div>
       <h2 v-for="(die, index) in store.diceChars" :key="index">
         {{ die }}

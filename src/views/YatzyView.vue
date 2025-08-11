@@ -48,7 +48,7 @@ const handleRestartGame = () => {
 
 <template>
   <div id="game">
-    <h1>Det beste Yatzy-spillet!</h1>
+    <h1 class="green">Det beste Yatzy-spillet!</h1>
     <ConfettiExplosion
       v-if="showWinnerModal"
       :duration="8000"
@@ -104,5 +104,8 @@ const handleRestartGame = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+h1 {
+  text-decoration: underline;
 }
 </style>

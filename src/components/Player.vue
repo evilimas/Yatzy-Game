@@ -15,7 +15,9 @@ const emit = defineEmits<{
 <template>
   <div>
     <div v-if="!gameStarted" id="Player">
-      <h3>Spillere: {{ players }}</h3>
+      <h3>
+        Spillere: <span class="green">{{ players }}</span>
+      </h3>
       <button :disabled="players >= 4" @click="emit('player', 'increase')">+</button>
       <button :disabled="players <= 1" @click="emit('player', 'decrease')">-</button>
       <button @click="emit('startGame')">Start Spill</button>
@@ -23,4 +25,8 @@ const emit = defineEmits<{
     <button v-if="gameStarted" @click="emit('reStartGame')">Restart Spill</button>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+h3 {
+  text-decoration: underline;
+}
+</style>

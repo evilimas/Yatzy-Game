@@ -2,8 +2,7 @@
 
 <template>
   <div>
-    <header>
-    </header>
+    <header></header>
     <RouterView />
   </div>
 </template>

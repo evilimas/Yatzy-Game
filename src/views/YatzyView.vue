@@ -104,6 +104,7 @@ const handleRestartGame = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0;
 }
 h1 {
   text-decoration: underline;

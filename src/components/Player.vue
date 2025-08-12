@@ -19,11 +19,11 @@ const emit = defineEmits<{
         Spillere: <span class="green">{{ players }}</span>
       </h3>
       <div class="button-row">
-        <button class="button" :disabled="players >= 4" @click="emit('player', 'increase')">
-          +
-        </button>
         <button class="button" :disabled="players <= 1" @click="emit('player', 'decrease')">
           -
+        </button>
+        <button class="button" :disabled="players >= 4" @click="emit('player', 'increase')">
+          +
         </button>
         <button class="button" @click="emit('startGame')">Start Spill</button>
       </div>

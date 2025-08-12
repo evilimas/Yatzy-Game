@@ -28,7 +28,7 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const diceChars = "⚀⚁⚂⚃⚄⚅";
   const dice = ref<(Die | null)[]>(createEmptyDice);
   const holdDie = ref<boolean[]>(new Array(5).fill(false));
-  const dieColor = ref<string[]>(["black", "black", "black", "black", "black"]);
+  // const dieColor = ref<string[]>(["black", "black", "black", "black", "black"]);
   const throwCountRemaining = ref(3);
   const scoreboards = reactive<Scoreboard[]>(createEmptyScoreboards(players.value));
 
@@ -126,8 +126,8 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const dieStyle = (index: number): DieViewStateStyle => {
     const isSelected = holdDie.value[index];
     return {
-      background: isSelected ? "lightblue" : "black",
-      color: isSelected ? "black" : "white",
+      background: isSelected ? "" : "",
+      color: isSelected ? "hsla(160, 100%, 37%, 1)" : "white",
     };
   };
 
@@ -137,7 +137,7 @@ export const yatzyStore = defineStore("scoreBoard", () => {
     players,
     activePlayer,
     completeScoreboards,
-    dieColor,
+    // dieColor,
     holdDie,
     dice,
     diceChars,

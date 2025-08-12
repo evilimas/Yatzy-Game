@@ -15,7 +15,9 @@ const emit = defineEmits<{
 
 const props = defineProps<Props>();
 
-const trillText = computed(() => (props.throwCount <= 0 ? "Ferdig" : "Ganger igjen"));
+const trillText = computed(() =>
+  props.throwCount <= 0 ? "Ferdig, plasser terningen din" : "Ganger igjen"
+);
 </script>
 
 <template>
@@ -25,8 +27,11 @@ const trillText = computed(() => (props.throwCount <= 0 ? "Ferdig" : "Ganger igj
       <span class="green">{{ activePlayer }}</span>
     </legend>
     <div v-show="gameStarted">
-      <button @click="emit('throwDice')" :disabled="throwCount <= 0">Trill terninger</button>
-      <div>{{ throwCount }} {{ trillText }}</div>
+      <button @click="emit('throwDice')" :disabled="throwCount <= 0">Trill Terninger</button>
+      <div>
+        <span v-if="!(props.throwCount <= 0)" class="green">{{ props.throwCount }}</span>
+        {{ trillText }}
+      </div>
 
       <div class="dice" style="display: flex" :disabled="throwCount === 3">
         <span
@@ -47,8 +52,8 @@ const trillText = computed(() => (props.throwCount <= 0 ? "Ferdig" : "Ganger igj
 
 <style scoped>
 .dice-span {
-  font-size: 300%;
-  background: lightblue;
+  font-size: 330%;
+  /* background: lightblue; */
   line-height: 90%;
 }
 .dice {
@@ -56,8 +61,8 @@ const trillText = computed(() => (props.throwCount <= 0 ? "Ferdig" : "Ganger igj
   cursor: pointer;
 }
 fieldset {
-  height: 15vh;
-  width: 23vw;
+  height: 12vh;
+  width: 21vw;
   display: flex;
   flex-direction: column;
   align-items: center;

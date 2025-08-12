@@ -62,14 +62,16 @@ table,
 tr,
 th,
 td {
-  border: 1px solid lightblue;
+  border: 2px solid lightblue;
   border-collapse: collapse;
   padding: 4px;
+  color: rgb(228, 228, 228);
+  font-weight: 500;
 }
 
 .disabled {
-  pointer-events: none;
+  /* pointer-events: none; */
   background-color: #f0f0f0 !important;
-  color: #888;
+  color: #000000;
 }
 </style>

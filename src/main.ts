@@ -6,9 +6,31 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import { OhVueIcon, addIcons } from "oh-vue-icons";
-import { BiDice1, BiDice2, BiDice3, BiDice4, BiDice5, BiDice6 } from "oh-vue-icons/icons";
+import {
+  BiDice1,
+  BiDice2,
+  BiDice3,
+  BiDice4,
+  BiDice5,
+  BiDice6,
+  BiCaretDownSquareFill,
+  BiCaretDownSquare,
+  FaCaretSquareDown,
+  BiArrowDownCircleFill,
+} from "oh-vue-icons/icons";
 
-addIcons(BiDice1, BiDice2, BiDice3, BiDice4, BiDice5, BiDice6);
+addIcons(
+  BiDice1,
+  BiDice2,
+  BiDice3,
+  BiDice4,
+  BiDice5,
+  BiDice6,
+  BiCaretDownSquareFill,
+  BiCaretDownSquare,
+  FaCaretSquareDown,
+  BiArrowDownCircleFill
+);
 
 const app = createApp(App);
 

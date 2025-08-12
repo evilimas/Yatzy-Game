@@ -28,7 +28,7 @@ const trillText = computed(() =>
     </legend>
     <div v-show="gameStarted">
       <button @click="emit('throwDice')" :disabled="throwCount <= 0">Trill Terninger</button>
-      <div>
+      <div class="trill-text">
         <span v-if="!(props.throwCount <= 0)" class="green">{{ props.throwCount }}</span>
         {{ trillText }}
       </div>
@@ -51,6 +51,14 @@ const trillText = computed(() =>
 </template>
 
 <style scoped>
+.trill-text {
+  color: rgb(214, 214, 214);
+  font-weight: 600;
+}
+legend {
+  color: white;
+  font-weight: 600;
+}
 .dice-span {
   font-size: 330%;
   /* background: lightblue; */

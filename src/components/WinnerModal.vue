@@ -120,12 +120,13 @@ const handleBackdropClick = (event: Event) => {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #239ba7;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #1f7a8c;
+  transform: scale(1.05);
 }
 
 /* Modal transition animations */

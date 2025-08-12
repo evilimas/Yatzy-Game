@@ -22,6 +22,7 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const createEmptyDice = Array.from({ length: 5 }, () => null);
 
   // reactive state
+  const scores = ref<{ name: string; value: number }[]>([]);
   const players = ref<number>(1);
   const gameStarted = ref<boolean>(false);
   const activePlayer = ref<number>(1);
@@ -32,8 +33,10 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const throwCountRemaining = ref(3);
   const scoreboards = reactive<Scoreboard[]>(createEmptyScoreboards(players.value));
 
-  // watch
-  watch(players, setupScoreboardsFromPlayerCount);
+  const savedScores = localStorage.getItem("highScores");
+  if (savedScores) {
+    scores.value = JSON.parse(savedScores);
+  }
 
   // action
   const nextTurn = (combination: string) => {
@@ -81,6 +84,21 @@ export const yatzyStore = defineStore("scoreBoard", () => {
     gameStarted.value = false;
   };
 
+  function addAllHighScores() {
+    completeScoreboards.value.forEach((scoreboard, idx) => {
+      const playerName = `Spiller ${idx + 1}`;
+      const playerScore = scoreboard.total ?? 0;
+      addHighScore(playerName, playerScore);
+    });
+  }
+
+  function addHighScore(name: string, value: number) {
+    scores.value.push({ name, value });
+    scores.value.sort((a, b) => b.value - a.value);
+    scores.value = scores.value.slice(0, 10); // Keep top 10
+    localStorage.setItem("highScores", JSON.stringify(scores.value));
+  }
+
   // computed
   const completeScoreboards = computed(() =>
     scoreboards.map((sb) => {
@@ -107,6 +125,16 @@ export const yatzyStore = defineStore("scoreBoard", () => {
     }))
   );
 
+  // watch
+  watch(players, setupScoreboardsFromPlayerCount);
+
+  // watch
+  watch(isGameFinished, (finished) => {
+    if (finished) {
+      addAllHighScores();
+    }
+  });
+
   // viewstate funksjon
   const winner = () => {
     const scores = completeScoreboards.value;
@@ -132,6 +160,7 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   };
 
   return {
+    scores,
     isGameFinished,
     gameStarted,
     players,

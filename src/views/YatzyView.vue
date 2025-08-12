@@ -4,6 +4,7 @@ import Scoreboard from "@/components/Scoreboard.vue";
 import Dice from "@/components/Dice.vue";
 import Player from "@/components/Player.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
+import HighScore from "@/components/HighScore.vue";
 import { yatzyStore } from "../stores/yatzyStore";
 import ConfettiExplosion from "vue-confetti-explosion";
 
@@ -89,6 +90,9 @@ const handleRestartGame = () => {
       @new-game="handleNewGame"
     />
   </div>
+  <div class="high-scores">
+    <HighScore :scores="store.scores" />
+  </div>
 </template>
 
 <style>
@@ -108,5 +112,16 @@ const handleRestartGame = () => {
 }
 h1 {
   text-decoration: underline;
+}
+.high-scores {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 3px;
 }
 </style>

@@ -121,12 +121,12 @@ const emptyScoreboard = (): Scoreboard => ({
 });
 
 const uiLabels = {
-  aces: "Enere ⚀",
-  twos: "Toere ⚁",
-  threes: "Treere ⚂",
-  fours: "Firere ⚃",
-  fives: "Femmere ⚄",
-  sixes: "Seksere ⚅",
+  aces: "Enere",
+  twos: "Toere",
+  threes: "Treere",
+  fours: "Firere",
+  fives: "Femmere",
+  sixes: "Seksere",
   sum: "Sum",
   bonus: "Bonus",
   onePair: "Ett par",

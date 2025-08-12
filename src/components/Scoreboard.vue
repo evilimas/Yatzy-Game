@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CompleteScoreboard } from "@/services/yatzy/types";
 import { uiLabels } from "../yatzyLogic";
+
 interface Props {
   players: number;
   activePlayer: number;
@@ -34,7 +35,29 @@ const emit = defineEmits<{
       </thead>
       <tbody>
         <tr v-for="(value, combination) in uiLabels" :key="combination">
-          <td :id="combination">{{ value }}</td>
+          <td :id="combination">
+            <span v-if="combination === 'aces'">
+              {{ value }} <v-icon name="bi-dice-1" style="font-size: 1.5em" />
+            </span>
+            <span v-else-if="combination === 'twos'">
+              {{ value }} <v-icon name="bi-dice-2" style="font-size: 1.5em" />
+            </span>
+            <span v-else-if="combination === 'threes'">
+              {{ value }} <v-icon name="bi-dice-3" style="font-size: 1.5em" />
+            </span>
+            <span v-else-if="combination === 'fours'">
+              {{ value }} <v-icon name="bi-dice-4" style="font-size: 1.5em" />
+            </span>
+            <span v-else-if="combination === 'fives'">
+              {{ value }} <v-icon name="bi-dice-5" style="font-size: 1.5em" />
+            </span>
+            <span v-else-if="combination === 'sixes'">
+              {{ value }} <v-icon name="bi-dice-6" style="font-size: 1.5em" />
+            </span>
+            <span v-else>
+              {{ value }}
+            </span>
+          </td>
           <td
             v-for="(scoreBoard, index) of completeScoreboards"
             :key="index"
@@ -73,5 +96,9 @@ td {
   /* pointer-events: none; */
   background-color: #f0f0f0 !important;
   color: #000000;
+}
+.big-die-icon {
+  font-size: 1.5em;
+  vertical-align: middle;
 }
 </style>

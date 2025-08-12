@@ -22,7 +22,7 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const createEmptyDice = Array.from({ length: 5 }, () => null);
 
   // reactive state
-  const scores = ref<{ name: string; value: number }[]>([]);
+  const scores = ref<{ name: string; value: number; date: string }[]>([]);
   const players = ref<number>(1);
   const gameStarted = ref<boolean>(false);
   const activePlayer = ref<number>(1);
@@ -88,12 +88,24 @@ export const yatzyStore = defineStore("scoreBoard", () => {
     completeScoreboards.value.forEach((scoreboard, idx) => {
       const playerName = `Spiller ${idx + 1}`;
       const playerScore = scoreboard.total ?? 0;
-      addHighScore(playerName, playerScore);
+      const date = new Date();
+      const playerDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(
+        2,
+        "0"
+      )}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(
+        2,
+        "0"
+      )}`;
+
+      addHighScore(playerName, playerScore, playerDate);
     });
   }
 
-  function addHighScore(name: string, value: number) {
-    scores.value.push({ name, value });
+  function addHighScore(name: string, value: number, date: string) {
+    scores.value.push({ name, value, date });
     scores.value.sort((a, b) => b.value - a.value);
     scores.value = scores.value.slice(0, 10); // Keep top 10
     localStorage.setItem("highScores", JSON.stringify(scores.value));

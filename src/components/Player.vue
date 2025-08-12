@@ -35,6 +35,7 @@ const emit = defineEmits<{
 h3 {
   text-decoration: underline;
   text-align: center;
+  color: rgb(231, 231, 231);
 }
 .button-row {
   display: flex;

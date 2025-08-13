@@ -27,7 +27,7 @@ const store = yatzyStore();
     </div>
     <div class="wrapper">
       <nav>
-        <RouterLink to="/yatzy">Spill Yatzy</RouterLink>
+        <RouterLink to="/yatzy">Spill Yatzy Lokalt</RouterLink>
       </nav>
     </div>
   </main>

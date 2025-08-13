@@ -6,6 +6,12 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "login",
+      component: () => import("../views/LoginView.vue"),
+      props: true,
+    },
+    {
+      path: "/home",
       name: "home",
       component: HomeView,
     },

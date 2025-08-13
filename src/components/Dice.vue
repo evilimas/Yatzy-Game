@@ -23,17 +23,21 @@ const trillText = computed(() =>
 <template>
   <fieldset v-show="gameStarted">
     <legend>
-      Aktiv Spiller:
-      <span class="green">{{ activePlayer }}</span>
+      <h4>
+        Aktiv Spiller:
+        <span class="green">{{ activePlayer }}</span>
+      </h4>
     </legend>
     <div v-show="gameStarted">
-      <button @click="emit('throwDice')" :disabled="throwCount <= 0">Trill Terninger</button>
-      <div class="trill-text">
-        <span v-if="!(props.throwCount <= 0)" class="green">{{ props.throwCount }}</span>
-        {{ trillText }}
+      <div class="button-row">
+        <button @click="emit('throwDice')" :disabled="throwCount <= 0">Trill Terninger</button>
+        <div class="trill-text">
+          <span v-if="!(props.throwCount <= 0)" class="green">{{ props.throwCount }}</span>
+          {{ trillText }}
+        </div>
       </div>
 
-      <div class="dice" style="display: flex" :disabled="throwCount === 3">
+      <div class="dice" :disabled="throwCount === 3">
         <span
           class="dice-span"
           v-for="dieData of diceObjects"
@@ -51,6 +55,10 @@ const trillText = computed(() =>
 </template>
 
 <style scoped>
+h4 {
+  color: rgb(218, 218, 218);
+  font-weight: 600;
+}
 .trill-text {
   color: rgb(214, 214, 214);
   font-weight: 600;
@@ -65,14 +73,22 @@ legend {
   line-height: 90%;
 }
 .dice {
+  display: flex;
   user-select: none;
   cursor: pointer;
 }
 fieldset {
-  height: 12vh;
-  width: 21vw;
+  height: 135px;
+  width: 24vw;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.button-row {
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
 }
 </style>

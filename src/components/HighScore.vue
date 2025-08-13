@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+
 interface Props {
   scores: { name: string; value: number; date: Date }[];
 }

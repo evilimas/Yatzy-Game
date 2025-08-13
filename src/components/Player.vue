@@ -36,6 +36,7 @@ h3 {
   text-decoration: underline;
   text-align: center;
   color: rgb(231, 231, 231);
+  padding: 0.5em;
 }
 .button-row {
   display: flex;

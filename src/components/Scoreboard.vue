@@ -35,7 +35,7 @@ const emit = defineEmits<{
       </thead>
       <tbody>
         <tr v-for="(value, combination) in uiLabels" :key="combination">
-          <td :id="combination">
+          <td :id="combination" class="combination-cell">
             <span v-if="combination === 'aces'">
               {{ value }} <v-icon name="bi-dice-1" style="font-size: 1.5em" />
             </span>
@@ -91,14 +91,17 @@ td {
   color: rgb(228, 228, 228);
   font-weight: 500;
 }
+.combination-cell v-icon {
+  margin-left: auto;
+}
 
 .disabled {
   /* pointer-events: none; */
   background-color: #f0f0f0 !important;
   color: #000000;
 }
-.big-die-icon {
+/* .big-die-icon {
   font-size: 1.5em;
   vertical-align: middle;
-}
+} */
 </style>

@@ -15,7 +15,7 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
     <button @click="isHighScoreActive = !isHighScoreActive">
       {{ highScoreArrow }}
     </button>
-    <h2 class="green">High Scores</h2>
+    <h2 class="green">Toppresultater</h2>
   </div>
   <div class="high-score">
     <div v-if="isHighScoreActive">
@@ -25,7 +25,7 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
         </li>
       </ol>
       <div v-else>
-        <h3>Ingen high scores</h3>
+        <h3>Ingen Toppresultater</h3>
       </div>
     </div>
   </div>
@@ -37,7 +37,7 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
   color: #fff;
   padding: 1em;
   border-radius: 8px;
-  width: 350px;
+  width: 380px;
 }
 .high-score-header {
   display: flex;

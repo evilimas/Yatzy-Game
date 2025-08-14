@@ -5,6 +5,7 @@ import Dice from "@/components/Dice.vue";
 import Player from "@/components/Player.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import HighScore from "@/components/HighScore.vue";
+import LiveChat from "@/components/LiveChat.vue";
 import { yatzyStore } from "../stores/yatzyStore";
 import ConfettiExplosion from "vue-confetti-explosion";
 
@@ -93,6 +94,9 @@ const handleRestartGame = () => {
   <div class="high-scores">
     <HighScore :scores="store.scores" />
   </div>
+  <div class="live-chat">
+    <LiveChat />
+  </div>
 </template>
 
 <style>
@@ -116,6 +120,17 @@ h1 {
 .high-scores {
   position: fixed;
   bottom: 0;
+  right: 0;
+  width: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 3px;
+}
+.live-chat {
+  position: fixed;
+  top: 0;
   right: 0;
   width: auto;
   max-height: 400px;

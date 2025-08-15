@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import Scoreboard from "@/components/Scoreboard.vue";
 import Dice from "@/components/Dice.vue";
 import Player from "@/components/Player.vue";
@@ -9,6 +10,7 @@ import LiveChat from "@/components/LiveChat.vue";
 import { yatzyStore } from "../stores/yatzyStore";
 import ConfettiExplosion from "vue-confetti-explosion";
 
+const router = useRouter();
 const showWinnerModal = ref(false);
 const store = yatzyStore();
 
@@ -49,6 +51,9 @@ const handleRestartGame = () => {
 </script>
 
 <template>
+  <nav class="navbar">
+    <button @click="router.push('/home')">Tilbake</button>
+  </nav>
   <div id="game">
     <h1 class="green">Det beste Yatzy-spillet!</h1>
     <ConfettiExplosion
@@ -130,7 +135,7 @@ h1 {
 }
 .live-chat {
   position: fixed;
-  top: 0;
+  top: 60px;
   right: 0;
   width: auto;
   max-height: 400px;
@@ -138,5 +143,15 @@ h1 {
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   padding: 3px;
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #222;
+  color: #fff;
+  padding: 0.8em;
+  border-bottom: 2px solid #444;
 }
 </style>

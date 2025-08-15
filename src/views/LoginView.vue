@@ -17,6 +17,7 @@ const password = ref("");
 const name = ref("");
 const user = ref<User | null>(null);
 const loginPage = ref(true);
+const error = ref<string | null>(null);
 
 const router = useRouter();
 
@@ -27,9 +28,13 @@ onMounted(() => {
 });
 
 const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  await signInWithPopup(auth, provider);
-  router.push("/home");
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    router.push("/home");
+  } catch {
+    alert("Error signing in with Google");
+  }
 };
 
 const signInWithEmail = async (email: string, password: string) => {
@@ -38,6 +43,7 @@ const signInWithEmail = async (email: string, password: string) => {
     router.push("/home");
   } catch (error) {
     alert((error as Error).message);
+    error.value = (error as Error).message;
   }
 };
 
@@ -66,40 +72,48 @@ const createAccount = async (email: string, password: string, displayName: strin
         </div>
       </div>
       <div class="container">
+        Eller med din Email
         <input v-model="email" id="email-input" type="email" placeholder="Email" required />
         <input
           v-model="password"
           type="password"
           id="password-input"
-          placeholder="Password"
+          placeholder="Passord"
           required
         />
 
         <button @click="signInWithEmail(email, password)" id="sign-in-btn" class="primary-btn">
-          Sign in
+          Logg inn
         </button>
         <div>
-          <h3>ikke har konto? <a @click="loginPage = false">Registrer deg her</a></h3>
+          <h3>Ikke har konto? <a @click="loginPage = false">Registrer deg her</a></h3>
         </div>
       </div>
     </section>
-    <section>
+    <section id="logged-out-view">
       <h2 v-if="!loginPage">Opprett en konto</h2>
       <div class="container">
-        <input v-model="name" id="name-input" type="text" placeholder="Navn" required />
-        <input v-model="email" id="email-input" type="email" placeholder="Email" required />
-        <input
-          v-model="password"
-          type="password"
-          id="password-input"
-          placeholder="Password"
-          required
-        />
-        <button @click="createAccount(email, password)" id="create-account-btn" class="primary-btn">
-          Opprett konto
-        </button>
+        <form action="">
+          <input v-model="name" id="name-input" type="text" placeholder="Navn" required />
+          <input v-model="email" id="email-input" type="email" placeholder="Email" required />
+          <input
+            v-model="password"
+            type="password"
+            id="password-input"
+            placeholder="Passord"
+            min="6"
+            required
+          />
+          <button
+            @click="createAccount(email, password, name)"
+            id="create-account-btn"
+            class="primary-btn"
+          >
+            Opprett konto
+          </button>
+        </form>
         <div>
-          <h3>allerede har konto? <a @click="loginPage = true">Logg inn her</a></h3>
+          <h3>Allerede har konto? <a @click="loginPage = true">Logg inn her</a></h3>
         </div>
       </div>
     </section>
@@ -113,6 +127,7 @@ section {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  width: 420px;
 }
 .container {
   display: flex;
@@ -131,7 +146,8 @@ input {
 .google-login {
   display: flex;
 }
-.google {
+a {
+  cursor: pointer;
 }
 img {
   width: 20px;
@@ -148,6 +164,13 @@ img {
   border: none;
   background-color: #ffffff;
   color: rgb(0, 0, 0);
+  gap: 10px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 </style>

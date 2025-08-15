@@ -1,15 +1,41 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "../stores/firebaseStore";
+import { getAuth, signOut } from "firebase/auth";
 
+const router = useRouter();
+const auth = getAuth();
 const store = yatzyStore();
 const firebaseStore = useFirebaseStore();
+
+const userProfile = firebaseStore.user?.photoURL
+  ? firebaseStore.user.photoURL
+  : "./src/images/default-avatar.jpeg";
+
+const signOutUser = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Error signing out:", error);
+  } finally {
+    router.push("/");
+  }
+};
+
+const userFirstName = firebaseStore.user?.displayName
+  ? firebaseStore.user.displayName.split(" ")[0]
+  : "";
 </script>
 
 <template>
+  <nav class="navbar">
+    <img :src="userProfile" alt="User Avatar" />
+    <button @click="signOutUser">Logg ut</button>
+  </nav>
   <main>
     <h1 class="green">
-      Velkommen <span>{{ firebaseStore.user?.displayName }}</span> til det beste Yatzy-spillet!
+      Velkommen <span>{{ userFirstName }}</span> til det beste Yatzy-spillet!
     </h1>
     <div>
       <h2 v-for="(die, index) in store.diceChars" :key="index">
@@ -46,5 +72,22 @@ h2 {
 }
 span {
   text-decoration: underline;
+}
+.navbar {
+  display: flex;
+  gap: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #222;
+  color: #fff;
+  padding: 0.8em;
+  border-bottom: 2px solid #444;
+}
+img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 </style>

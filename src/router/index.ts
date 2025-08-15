@@ -11,6 +11,12 @@ const router = createRouter({
       props: true,
     },
     {
+      path: "/edit-profile",
+      name: "edit-profile",
+      component: () => import("../views/EditProfileView.vue"),
+      props: true,
+    },
+    {
       path: "/home",
       name: "home",
       component: HomeView,

@@ -30,7 +30,11 @@ const trillText = computed(() =>
     </legend>
     <div v-show="gameStarted">
       <div class="button-row">
-        <button @click="emit('throwDice')" :disabled="throwCount <= 0">Trill Terninger</button>
+        <div class="btn-div">
+          <button class="primary-btn" @click="emit('throwDice')" :disabled="throwCount <= 0">
+            Trill Terninger
+          </button>
+        </div>
         <div class="trill-text">
           <span v-if="!(props.throwCount <= 0)" class="green">{{ props.throwCount }}</span>
           {{ trillText }}
@@ -79,16 +83,20 @@ legend {
 }
 fieldset {
   height: 135px;
-  width: 24vw;
+  width: 13vw;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: baseline;
 }
 .button-row {
   display: flex;
-
   flex-direction: column;
-
-  width: 100%;
+  /* width: 100%; */
+}
+.btn-div {
+  /* text-align: center;
+  width: 100%; */
+}
+.primary-btn {
 }
 </style>

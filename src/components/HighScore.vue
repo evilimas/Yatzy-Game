@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { useFirebaseStore } from "@/stores/firebaseStore";
+const firebaseStore = useFirebaseStore();
 
 interface Props {
   scores: { name: string; value: number; date: Date }[];
@@ -15,13 +17,14 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
     <button @click="isHighScoreActive = !isHighScoreActive">
       {{ highScoreArrow }}
     </button>
-    <h2 class="green">Toppresultater</h2>
+    <h3 class="green">Toppresultater</h3>
   </div>
   <div class="high-score">
     <div v-if="isHighScoreActive">
       <ol v-if="props.scores.length > 0">
         <li v-for="(score, index) in props.scores" :key="index">
-          {{ score.name }} : {{ score.value }} Poeng - {{ score.date }}
+          {{ score.name }} : {{ score.value }} Poeng -
+          {{ score.date }}
         </li>
       </ol>
       <div v-else>
@@ -35,7 +38,7 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
 .high-score {
   background: #222;
   color: #fff;
-  padding: 1em;
+  padding: 0.5em;
   border-radius: 8px;
   width: 380px;
 }

@@ -32,6 +32,7 @@ const userFirstName = firebaseStore.user?.displayName
   <nav class="navbar">
     <img :src="userProfile" alt="User Avatar" />
     <button @click="signOutUser">Logg ut</button>
+    <button @click="router.push('/edit-profile')">Rediger Profil</button>
   </nav>
   <main>
     <h1 class="green">

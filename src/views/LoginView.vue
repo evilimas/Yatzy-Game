@@ -94,12 +94,18 @@ const createAccount = async (email: string, password: string, displayName: strin
       <h2 v-if="!loginPage">Opprett en konto</h2>
       <div class="container">
         <form action="">
-          <input v-model="name" id="name-input" type="text" placeholder="Navn" required />
-          <input v-model="email" id="email-input" type="email" placeholder="Email" required />
+          <input v-model="name" id="create-name-input" type="text" placeholder="Navn" required />
+          <input
+            v-model="email"
+            id="create-email-input"
+            type="email"
+            placeholder="Email"
+            required
+          />
           <input
             v-model="password"
             type="password"
-            id="password-input"
+            id="create-password-input"
             placeholder="Passord"
             min="6"
             required

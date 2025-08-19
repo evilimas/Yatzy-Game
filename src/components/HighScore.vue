@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useFirebaseStore } from "@/stores/firebaseStore";
+import { db } from "@/services/firebase";
+
 const firebaseStore = useFirebaseStore();
 
+console.log(db);
 interface Props {
   scores: { name: string; value: number; date: Date }[];
 }

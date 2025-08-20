@@ -1,22 +1,35 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { auth } from "@/services/firebase";
 import { onAuthStateChanged, type User, updateProfile } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { collection, addDoc, serverTimestamp, getDocs, onSnapshot } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
+import router from "@/router";
 
 export const useFirebaseStore = defineStore("firebase", () => {
   const db = getFirestore();
 
   const user = ref<User | null>(null);
   const messages = ref<
-    { id: string; user: string; text: string; createdAt: Timestamp; displayName: string }[]
+    {
+      id: string;
+      user: string;
+      text: string;
+      createdAt: Timestamp;
+      displayName: string;
+      profilePicture: string | null;
+    }[]
   >([]);
 
   onAuthStateChanged(auth, (u) => {
-    user.value = u;
-    fetchInRealTimeAndRenderMessagesFromDB();
+    if (u) {
+      user.value = u;
+      fetchInRealTimeAndRenderMessagesFromDB();
+    } else {
+      user.value = null;
+      router.push("/");
+    }
   });
 
   //   update profile functions
@@ -34,6 +47,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
         messageBody: message,
         uid: user?.uid,
         displayName: user?.displayName || user?.email,
+        profilePicture: user?.photoURL,
         createdAt: serverTimestamp(),
       });
       console.log("Document written with ID: ", docRef.id);
@@ -62,25 +76,27 @@ export const useFirebaseStore = defineStore("firebase", () => {
     onSnapshot(collection(db, "messages"), (querySnapshot) => {
       messages.value = [];
       querySnapshot.forEach((doc) => {
-        messages.value.unshift({
-          // displayName: doc.data().name,
+        messages.value.push({
           id: doc.id,
           user: doc.data().uid,
           displayName: doc.data().displayName,
           text: doc.data().messageBody,
           createdAt: doc.data().createdAt,
+          profilePicture: doc.data().profilePicture,
         });
       });
     });
   };
 
+  const sortedMessages = computed(() => {
+    return messages.value.slice().sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis());
+  });
+
   const displayDate = (firebaseDate: Timestamp) => {
     if (!firebaseDate) return "Date processing";
     const date = firebaseDate.toDate();
-
     const day = date.getDate();
     const year = date.getFullYear();
-
     const monthNames = [
       "Jan",
       "Feb",
@@ -96,7 +112,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
       "Dec",
     ];
     const month = monthNames[date.getMonth()];
-
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const paddedHours = hours < 10 ? "0" + hours : hours.toString();
@@ -110,6 +125,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     messages,
     updateUserProfile,
     addMessageToDB,
+    sortedMessages,
     // fetchOnceAndRenderMessagesFromDB,
     fetchInRealTimeAndRenderMessagesFromDB,
     displayDate,

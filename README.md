@@ -1,13 +1,16 @@
 # Yatzy Game
 
-A simple web-based Yatzy game built with Vue 3 and TypeScript.
+A web-based Yatzy game built with Vue 3, TypeScript, Pinia, and Firebase.
 
 ## Features
 
-- Play Yatzy with 1–4 players
+- Play Yatzy localy with 1–4 players
 - Interactive dice rolling and holding
 - Automatic score calculation and scoreboard
 - High score tracking (top 10, saved in browser)
+- Live chat with real-time updates (Firebase)
+- User authentication (Google and Email/Password via Firebase)
+- User profile editing (display name and avatar)
 
 ## Getting Started
 

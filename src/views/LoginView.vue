@@ -1,63 +1,22 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { auth } from "@/services/firebase";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  updateProfile,
-} from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
+import { useFirebaseStore } from "@/stores/firebaseStore";
+const firebaseStore = useFirebaseStore();
 
-const email = ref("");
-const password = ref("");
-const name = ref("");
+const email = ref<string>("");
+const password = ref<string>("");
+const name = ref<string>("");
 const user = ref<User | null>(null);
 const loginPage = ref(true);
-const error = ref<string | null>(null);
 
-const router = useRouter();
-
-onMounted(() => {
-  onAuthStateChanged(auth, (u) => {
-    user.value = u;
-  });
-});
-
-const signInWithGoogle = async () => {
-  try {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    router.push("/home");
-  } catch {
-    alert("Error signing in with Google");
-  }
-};
-
-const signInWithEmail = async (email: string, password: string) => {
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    router.push("/home");
-  } catch (error) {
-    alert((error as Error).message);
-    error.value = (error as Error).message;
-  }
-};
-
-const createAccount = async (email: string, password: string, displayName: string) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    if (userCredential.user) {
-      await updateProfile(userCredential.user, { displayName });
-    }
-    router.push("/home");
-  } catch (error) {
-    alert((error as Error).message);
-  }
-};
+// onMounted(() => {
+//   onAuthStateChanged(auth, (u) => {
+//     user.value = u;
+//   });
+// });
 </script>
 
 <template>
@@ -66,14 +25,18 @@ const createAccount = async (email: string, password: string, displayName: strin
       <h2>For å starte spillet, vennligst logg inn.</h2>
       <div class="container google">
         <div class="google-login">
-          <button @click="signInWithGoogle" id="sign-in-with-google" class="provider-btn">
+          <button
+            @click="firebaseStore.signInWithGoogle"
+            id="sign-in-with-google"
+            class="provider-btn"
+          >
             <img src="/src/images/google.png" alt="google icon" /> Logg inn med Google
           </button>
         </div>
       </div>
       <div class="container">
-        Eller med din Email
-        <input v-model="email" id="email-input" type="email" placeholder="Email" required />
+        Eller med din Epost
+        <input v-model="email" id="email-input" type="email" placeholder="Epost" required />
         <input
           v-model="password"
           type="password"
@@ -82,7 +45,11 @@ const createAccount = async (email: string, password: string, displayName: strin
           required
         />
 
-        <button @click="signInWithEmail(email, password)" id="sign-in-btn" class="primary-btn">
+        <button
+          @click="firebaseStore.signInWithEmail(email, password)"
+          id="sign-in-btn"
+          class="primary-btn"
+        >
           Logg inn
         </button>
         <div>
@@ -111,7 +78,7 @@ const createAccount = async (email: string, password: string, displayName: strin
             required
           />
           <button
-            @click="createAccount(email, password, name)"
+            @click="firebaseStore.createAccount(email, password, name)"
             id="create-account-btn"
             class="primary-btn"
           >

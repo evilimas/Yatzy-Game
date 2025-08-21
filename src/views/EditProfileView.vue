@@ -14,7 +14,6 @@ const updateProfile = async () => {
     displayName: displayName.value,
     photoURL: photoURL.value,
   };
-
   try {
     await firebaseStore.updateUserProfile(profileData);
     alert("Profil oppdatert!");

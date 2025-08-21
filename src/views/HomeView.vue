@@ -2,26 +2,14 @@
 import { useRouter } from "vue-router";
 import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "../stores/firebaseStore";
-import { getAuth, signOut } from "firebase/auth";
 
 const router = useRouter();
-const auth = getAuth();
 const store = yatzyStore();
 const firebaseStore = useFirebaseStore();
 
 const userProfile = firebaseStore.user?.photoURL
   ? firebaseStore.user.photoURL
   : "./src/images/default-avatar.jpeg";
-
-const signOutUser = async () => {
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error("Error signing out:", error);
-  } finally {
-    router.push("/");
-  }
-};
 
 const userFirstName = firebaseStore.user?.displayName
   ? firebaseStore.user.displayName.split(" ")[0]
@@ -31,7 +19,7 @@ const userFirstName = firebaseStore.user?.displayName
 <template>
   <nav class="navbar">
     <img :src="userProfile" alt="User Avatar" />
-    <button @click="signOutUser">Logg ut</button>
+    <button @click="firebaseStore.signOutUser">Logg ut</button>
     <button @click="router.push('/edit-profile')">Rediger Profil</button>
   </nav>
   <main>

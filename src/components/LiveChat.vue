@@ -1,44 +1,30 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, nextTick, watch } from "vue";
 import { useFirebaseStore } from "../stores/firebaseStore";
-import { auth } from "@/services/firebase";
 
 const isChatActive = ref(false);
-
-const firebaseStore = useFirebaseStore();
-
 const newMessage = ref<string>("");
+const messagesContainer = ref<HTMLElement | null>(null);
 
 const chatArrow = computed(() => (isChatActive.value ? "▲" : "▼"));
 
-// interface ChatMessage {
-//   id: number;
-//   user: string;
-//   text: string;
-// }
+const firebaseStore = useFirebaseStore();
 
-// const messages = ref(firebaseStore.messages || []);
-
-// const sendMessage = () => {
-//   if (newMessage.value.trim()) {
-//     messages.value.push({
-//       id: Date.now(),
-//       user: firebaseStore.user?.email || "User",
-//       text: newMessage.value,
-//     });
-//     newMessage.value = "";
-//   }
-// };
-const postMessage = () => {
-  const messageBody = newMessage.value;
-  const user = auth.currentUser;
-
-  if (messageBody) {
-    firebaseStore.addMessageToDB(messageBody, user);
-    newMessage.value = "";
+watch(
+  () => firebaseStore.messages.length,
+  async () => {
+    await nextTick();
+    if (messagesContainer.value) {
+      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+    }
   }
+);
+const sendMessage = async () => {
+  firebaseStore.postMessage(newMessage.value);
+  newMessage.value = "";
 };
 </script>
+
 <template>
   <div class="live-chat">
     <div class="live-chat-header">
@@ -48,8 +34,8 @@ const postMessage = () => {
       <h2 class="green">Live Chat</h2>
     </div>
     <div v-if="isChatActive" class="chat-content">
-      <div v-if="firebaseStore.messages.length" class="messages">
-        <div class="message" v-for="msg in firebaseStore.sortedMessages" :key="msg.id">
+      <div v-if="firebaseStore.messages" class="messages" ref="messagesContainer">
+        <div class="message" v-for="msg in firebaseStore.messages" :key="msg.id">
           <img
             :src="msg.profilePicture ? msg.profilePicture : './src/images/default-avatar.jpeg'"
             alt="User Avatar"
@@ -66,12 +52,8 @@ const postMessage = () => {
         <p>ingen meldinger</p>
       </div>
       <div class="input-container">
-        <input
-          v-model="newMessage"
-          @keyup.enter="postMessage()"
-          placeholder="Type your message..."
-        />
-        <button @click="postMessage()">Send</button>
+        <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type your message..." />
+        <button @click="sendMessage">Send</button>
         <!-- <button @click="firebaseStore.fetchOnceAndRenderMessagesFromDB">Fetch Messages</button> -->
       </div>
     </div>
@@ -99,13 +81,14 @@ const postMessage = () => {
   background: #f9f9f9;
   padding: 1em;
   border-radius: 8px;
-  width: 400px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
 }
 .live-chat-header {
   display: flex;
   align-items: center;
+  min-width: 400px;
 }
 .no-chat {
   text-align: center;

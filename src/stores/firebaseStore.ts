@@ -1,26 +1,37 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { auth } from "@/services/firebase";
-import { onAuthStateChanged, type User, updateProfile } from "firebase/auth";
+import type { message } from "@/services/yatzy/types";
+import type { User } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { collection, addDoc, serverTimestamp, getDocs, onSnapshot } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
+import {
+  Timestamp,
+  collection,
+  addDoc,
+  serverTimestamp,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 import router from "@/router";
 
 export const useFirebaseStore = defineStore("firebase", () => {
   const db = getFirestore();
+  const provider = new GoogleAuthProvider();
 
   const user = ref<User | null>(null);
-  const messages = ref<
-    {
-      id: string;
-      user: string;
-      text: string;
-      createdAt: Timestamp;
-      displayName: string;
-      profilePicture: string | null;
-    }[]
-  >([]);
+  const messages = ref<message[]>([]);
 
   onAuthStateChanged(auth, (u) => {
     if (u) {
@@ -32,7 +43,52 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   });
 
-  //   update profile functions
+  //   sign in functions
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      router.push("/home");
+    } catch {
+      alert("Error signing in with Google");
+    }
+  };
+
+  const signInWithEmail = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/home");
+    } catch (error) {
+      alert((error as Error).message);
+    }
+  };
+
+  //   create user functions
+
+  const createAccount = async (email: string, password: string, displayName: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, { displayName });
+      }
+      router.push("/home");
+    } catch (error) {
+      alert((error as Error).message);
+    }
+  };
+
+  // sign out functions
+
+  const signOutUser = async () => {
+    try {
+      await signOut(auth);
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  //   update user functions
 
   const updateUserProfile = async (profileData: { displayName: string; photoURL: string }) => {
     if (user.value) {
@@ -73,7 +129,11 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   };
 
   const fetchInRealTimeAndRenderMessagesFromDB = async () => {
-    onSnapshot(collection(db, "messages"), (querySnapshot) => {
+    const postsRef = collection(db, "messages");
+
+    const q = query(postsRef, where("createdAt", "!=", null), orderBy("createdAt", "asc"));
+
+    onSnapshot(q, (querySnapshot) => {
       messages.value = [];
       querySnapshot.forEach((doc) => {
         messages.value.push({
@@ -88,9 +148,18 @@ export const useFirebaseStore = defineStore("firebase", () => {
     });
   };
 
-  const sortedMessages = computed(() => {
-    return messages.value.slice().sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis());
-  });
+  // const sortedMessagesByDate = computed(() => {
+  //   return messages.value.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis());
+  // });
+
+  const postMessage = (message: string) => {
+    const messageBody = message;
+    const user = auth.currentUser;
+
+    if (messageBody) {
+      addMessageToDB(messageBody, user);
+    }
+  };
 
   const displayDate = (firebaseDate: Timestamp) => {
     if (!firebaseDate) return "Date processing";
@@ -123,11 +192,16 @@ export const useFirebaseStore = defineStore("firebase", () => {
   return {
     user,
     messages,
+    // sortedMessagesByDate,
     updateUserProfile,
     addMessageToDB,
-    sortedMessages,
+    postMessage,
     // fetchOnceAndRenderMessagesFromDB,
     fetchInRealTimeAndRenderMessagesFromDB,
     displayDate,
+    signInWithGoogle,
+    signInWithEmail,
+    createAccount,
+    signOutUser,
   };
 });

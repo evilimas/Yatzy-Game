@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore/lite";
+
 const dieValues = [1, 2, 3, 4, 5, 6] as const;
 type Die = (typeof dieValues)[number];
 // type Die = 1 | 2 | 3 | 4 | 5 | 6;
@@ -24,7 +26,6 @@ type YatzyCombination =
   | "chance"
   | "yatzy";
 
-
 type Scoreboard = {
   [K in YatzyCombination]?: number | null;
 };
@@ -33,7 +34,7 @@ type ScoreboardCombination = YatzyCombination | "sum" | "bonus" | "total";
 
 type CompleteScoreboard = {
   [K in ScoreboardCombination]?: number | null;
-}
+};
 
 interface DiceAndTurn {
   dice: Die[];
@@ -80,9 +81,25 @@ interface DieViewState {
   style: DieViewStateStyle;
 }
 
+interface message {
+  id: string;
+  user: string;
+  text: string;
+  createdAt: Timestamp;
+  displayName: string;
+  profilePicture: string | null;
+}
+
 export { dieValues };
-export type { 
-  Die, DieFrequencyTable, YatzyCombination, 
-  Scoreboard, DiceAndTurn, DieViewState, DieViewStateStyle,
-  ScoreboardCombination, CompleteScoreboard
- };
+export type {
+  Die,
+  DieFrequencyTable,
+  YatzyCombination,
+  Scoreboard,
+  DiceAndTurn,
+  DieViewState,
+  DieViewStateStyle,
+  ScoreboardCombination,
+  CompleteScoreboard,
+  message,
+};

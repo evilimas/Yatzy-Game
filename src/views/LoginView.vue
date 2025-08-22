@@ -1,22 +1,12 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { auth } from "@/services/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import type { User } from "firebase/auth";
+import { ref } from "vue";
 import { useFirebaseStore } from "@/stores/firebaseStore";
 const firebaseStore = useFirebaseStore();
 
 const email = ref<string>("");
 const password = ref<string>("");
 const name = ref<string>("");
-const user = ref<User | null>(null);
 const loginPage = ref(true);
-
-// onMounted(() => {
-//   onAuthStateChanged(auth, (u) => {
-//     user.value = u;
-//   });
-// });
 </script>
 
 <template>
@@ -36,22 +26,24 @@ const loginPage = ref(true);
       </div>
       <div class="container">
         Eller med din Epost
-        <input v-model="email" id="email-input" type="email" placeholder="Epost" required />
-        <input
-          v-model="password"
-          type="password"
-          id="password-input"
-          placeholder="Passord"
-          required
-        />
-
-        <button
-          @click="firebaseStore.signInWithEmail(email, password)"
-          id="sign-in-btn"
-          class="primary-btn"
-        >
-          Logg inn
-        </button>
+        <form action="" @submit.prevent>
+          <input v-model="email" id="email-input" type="email" placeholder="Epost" required />
+          <input
+            v-model="password"
+            type="password"
+            id="password-input"
+            placeholder="Passord"
+            required
+          />
+          <button
+            @click="firebaseStore.signInWithEmail(email, password)"
+            @keypress.enter="firebaseStore.signInWithEmail(email, password)"
+            id="sign-in-btn"
+            class="primary-btn"
+          >
+            Logg inn
+          </button>
+        </form>
         <div>
           <h3>Ikke har konto? <a @click="loginPage = false">Registrer deg her</a></h3>
         </div>

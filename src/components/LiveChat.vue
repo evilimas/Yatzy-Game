@@ -10,16 +10,21 @@ const chatArrow = computed(() => (isChatActive.value ? "▲" : "▼"));
 
 const firebaseStore = useFirebaseStore();
 
+function scrollChatToBottom() {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }
+}
+
 watch(
   () => firebaseStore.messages.length,
   async () => {
     await nextTick();
-    if (messagesContainer.value) {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    }
+    scrollChatToBottom();
   }
 );
-const sendMessage = async () => {
+
+const sendMessage = () => {
   firebaseStore.postMessage(newMessage.value);
   newMessage.value = "";
 };

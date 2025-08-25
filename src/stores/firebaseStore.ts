@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { auth } from "@/services/firebase";
-import type { message } from "@/services/yatzy/types";
+import type { Message, HighScore } from "@/services/yatzy/types";
 import type { User } from "firebase/auth";
 import {
   onAuthStateChanged,
@@ -31,7 +31,8 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const provider = new GoogleAuthProvider();
 
   const user = ref<User | null>(null);
-  const messages = ref<message[]>([]);
+  const messages = ref<Message[]>([]);
+  const highScores = ref<HighScore[]>([]);
 
   onAuthStateChanged(auth, (u) => {
     if (u) {
@@ -189,10 +190,43 @@ export const useFirebaseStore = defineStore("firebase", () => {
     return `${day} ${month} ${year} - ${paddedHours}:${paddedMinutes}`;
   };
 
+  // high score functions
+
+  const addHighScoresToDB = async (score: string, user: User | null) => {
+    try {
+      const docRef = await addDoc(collection(db, "highScores"), {
+        user: user?.uid,
+        score: score,
+        displayName: user?.displayName,
+        date: serverTimestamp(),
+        profilePicture: user?.photoURL,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
+
+  const fetchHighScores = async () => {
+    const querySnapshot = await getDocs(collection(db, "highScores"));
+    querySnapshot.forEach((doc) => {
+      highScores.value.push({
+        id: doc.id,
+        user: doc.data().uid,
+        score: doc.data().score,
+        displayName: doc.data().displayName,
+        date: doc.data().date,
+        profilePicture: doc.data().profilePicture,
+      });
+    });
+  };
+
   return {
     user,
     messages,
     // sortedMessagesByDate,
+    highScores,
+    fetchHighScores,
     updateUserProfile,
     addMessageToDB,
     postMessage,

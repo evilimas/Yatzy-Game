@@ -83,7 +83,7 @@ legend {
 }
 fieldset {
   height: 135px;
-  width: 13vw;
+  width: 16vw;
   display: flex;
   flex-direction: column;
   align-items: baseline;

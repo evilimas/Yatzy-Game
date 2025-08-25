@@ -81,13 +81,22 @@ interface DieViewState {
   style: DieViewStateStyle;
 }
 
-interface message {
+interface Message {
   id: string;
   user: string;
   text: string;
   createdAt: Timestamp;
   displayName: string;
   profilePicture: string | null;
+}
+
+interface HighScore {
+  id: string;
+  user: string;
+  displayName: string;
+  profilePicture: string | null;
+  score: string;
+  date: Timestamp;
 }
 
 export { dieValues };
@@ -101,5 +110,6 @@ export type {
   DieViewStateStyle,
   ScoreboardCombination,
   CompleteScoreboard,
-  message,
+  Message,
+  HighScore,
 };

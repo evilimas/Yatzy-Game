@@ -4,10 +4,14 @@ import { useFirebaseStore } from "@/stores/firebaseStore";
 
 const firebaseStore = useFirebaseStore();
 
+// interface Props {
+//   scores: { name: string; value: number; date: Date }[];
+// }
 interface Props {
-  scores: { name: string; value: number; date: Date }[];
+  isGameFinished: boolean;
 }
-const props = defineProps<Props>();
+defineProps<Props>();
+
 const isHighScoreActive = ref(false);
 
 const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"));
@@ -22,9 +26,9 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
   </div>
   <div class="high-score">
     <div v-if="isHighScoreActive">
-      <ol v-if="props.scores.length > 0">
-        <li v-for="(score, index) in props.scores" :key="index">
-          {{ score.name }} : {{ score.value }} Poeng -
+      <ol v-if="firebaseStore.highScores.length > 0">
+        <li v-for="(score, index) in firebaseStore.highScores" :key="index">
+          {{ score.displayName }} : {{ score.score }} Poeng -
           {{ score.date }}
         </li>
       </ol>

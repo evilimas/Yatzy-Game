@@ -12,8 +12,8 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 import {
+  getFirestore,
   Timestamp,
   collection,
   addDoc,
@@ -23,6 +23,10 @@ import {
   query,
   where,
   orderBy,
+  deleteDoc,
+  updateDoc,
+  Firestore,
+  doc,
 } from "firebase/firestore";
 import router from "@/router";
 
@@ -153,6 +157,36 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   return messages.value.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis());
   // });
 
+  const editMessageInDB = async (docId: string, newText: string) => {
+    const messageDoc = doc(db, "messages", docId);
+    await updateDoc(messageDoc, { messageBody: newText });
+  };
+
+  const editMessage = (docId: string, messageUserUid: string) => {
+    if (auth.currentUser?.uid === messageUserUid) {
+      const editedMessage = prompt("Endre meldingen:", "");
+      if (editedMessage) {
+        editMessageInDB(docId, editedMessage);
+      }
+    } else {
+      alert("du kan ikke endre andres meldinger");
+    }
+  };
+
+  const deleteMessagefromDB = async (docId: string) => {
+    await deleteDoc(doc(db, "messages", docId));
+  };
+
+  const deleteMessage = (docId: string, messageUserUid: string) => {
+    if (auth.currentUser?.uid === messageUserUid) {
+      if (confirm("Er du sikker på at du vil slette meldingen?")) {
+        deleteMessagefromDB(docId);
+      }
+    } else {
+      alert("Du kan ikke slette andres meldinger");
+    }
+  };
+
   const postMessage = (message: string) => {
     const messageBody = message;
     const user = auth.currentUser;
@@ -232,6 +266,8 @@ export const useFirebaseStore = defineStore("firebase", () => {
     postMessage,
     // fetchOnceAndRenderMessagesFromDB,
     fetchInRealTimeAndRenderMessagesFromDB,
+    deleteMessage,
+    editMessage,
     displayDate,
     signInWithGoogle,
     signInWithEmail,

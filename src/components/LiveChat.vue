@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, nextTick, watch } from "vue";
+import { auth } from "@/services/firebase";
 import { useFirebaseStore } from "../stores/firebaseStore";
 
 const isChatActive = ref(false);
@@ -50,6 +51,14 @@ const sendMessage = () => {
           <div class="message-content">
             <p class="time">{{ firebaseStore.displayDate(msg.createdAt) }}</p>
             <h4>{{ msg.displayName }} : {{ msg.text }}</h4>
+            <div class="chat-btns" v-show="auth.currentUser?.uid === msg.user">
+              <button class="delete-btn" @click="firebaseStore.deleteMessage(msg.id, msg.user)">
+                <v-icon name="md-delete" style="font-size: 1em" />
+              </button>
+              <button class="edit-btn" @click="firebaseStore.editMessage(msg.id, msg.user)">
+                <v-icon name="fa-edit" style="font-size: 1em" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -81,6 +90,7 @@ const sendMessage = () => {
   display: flex;
   align-items: center;
   gap: 5px;
+  position: relative;
 }
 .live-chat {
   background: #f9f9f9;
@@ -123,5 +133,23 @@ h4 {
 }
 input {
   width: 100%;
+}
+.delete-btn {
+  background: none;
+  border: none;
+  color: #b9b9b9;
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
+  top: 2px;
+}
+.edit-btn {
+  background: none;
+  border: none;
+  color: #b9b9b9;
+  cursor: pointer;
+  position: absolute;
+  right: 30px;
+  top: 2px;
 }
 </style>

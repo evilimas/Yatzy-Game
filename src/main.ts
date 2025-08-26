@@ -17,6 +17,10 @@ import {
   BiCaretDownSquare,
   FaCaretSquareDown,
   BiArrowDownCircleFill,
+  MdDeleteforever,
+  MdDeleteforeverRound,
+  MdDelete,
+  FaEdit,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -29,7 +33,11 @@ addIcons(
   BiCaretDownSquareFill,
   BiCaretDownSquare,
   FaCaretSquareDown,
-  BiArrowDownCircleFill
+  BiArrowDownCircleFill,
+  MdDeleteforever,
+  MdDeleteforeverRound,
+  MdDelete,
+  FaEdit
 );
 
 const app = createApp(App);

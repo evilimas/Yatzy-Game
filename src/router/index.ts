@@ -27,6 +27,12 @@ const router = createRouter({
       component: () => import("../views/YatzyView.vue"),
       props: true,
     },
+    {
+      path: "/yatzy-mp",
+      name: "yatzy-mp",
+      component: () => import("../views/YatzyMPView.vue"),
+      props: true,
+    },
   ],
 });
 

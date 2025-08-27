@@ -25,6 +25,7 @@ import {
   orderBy,
   deleteDoc,
   updateDoc,
+  setDoc,
   Firestore,
   doc,
 } from "firebase/firestore";
@@ -37,11 +38,14 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const user = ref<User | null>(null);
   const messages = ref<Message[]>([]);
   const highScores = ref<HighScore[]>([]);
+  const onlineUsers = ref<User[]>([]);
 
   onAuthStateChanged(auth, (u) => {
     if (u) {
       user.value = u;
+      setUserOnline(u);
       fetchInRealTimeAndRenderMessagesFromDB();
+      fetchOnlineUsers();
     } else {
       user.value = null;
       router.push("/");
@@ -86,6 +90,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   const signOutUser = async () => {
     try {
+      await setUserOffline(auth.currentUser!);
       await signOut(auth);
       router.push("/");
     } catch (error) {
@@ -99,6 +104,37 @@ export const useFirebaseStore = defineStore("firebase", () => {
     if (user.value) {
       await updateProfile(user.value, profileData);
     }
+  };
+
+  //   fetch user online status functions
+
+  const setUserOnline = async (user: User) => {
+    await setDoc(doc(db, "usersStatus", user.uid), {
+      uid: user.uid,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      lastOnline: serverTimestamp(),
+      online: true,
+    });
+  };
+
+  const fetchOnlineUsers = async () => {
+    const onlineUsersRef = collection(db, "usersStatus");
+    const q = query(onlineUsersRef, where("online", "==", true));
+    onSnapshot(q, (querySnapshot) => {
+      onlineUsers.value = [];
+      querySnapshot.forEach((doc) => {
+        onlineUsers.value.push(doc.data() as User);
+      });
+    });
+  };
+
+  // set user status to offline
+
+  const setUserOffline = async (user: User) => {
+    await updateDoc(doc(db, "usersStatus", user.uid), {
+      online: false,
+    });
   };
 
   //   Live chat functions
@@ -258,6 +294,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   return {
     user,
     messages,
+    onlineUsers,
     // sortedMessagesByDate,
     highScores,
     fetchHighScores,

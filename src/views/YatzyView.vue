@@ -7,12 +7,15 @@ import Player from "@/components/Player.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import HighScore from "@/components/HighScore.vue";
 import LiveChat from "@/components/LiveChat.vue";
+import Users from "@/components/Users.vue";
 import { yatzyStore } from "../stores/yatzyStore";
+import { useFirebaseStore } from "@/stores/firebaseStore";
 import ConfettiExplosion from "vue-confetti-explosion";
 
 const router = useRouter();
 const showWinnerModal = ref(false);
 const store = yatzyStore();
+const firebaseStore = useFirebaseStore();
 
 watch(
   () => store.isGameFinished,
@@ -22,6 +25,8 @@ watch(
     }
   }
 );
+
+
 const handleCloseModal = () => {
   showWinnerModal.value = false;
 };
@@ -101,6 +106,9 @@ const handleRestartGame = () => {
   </div>
   <div class="live-chat">
     <LiveChat />
+  </div>
+  <div>
+    <Users />
   </div>
 </template>
 

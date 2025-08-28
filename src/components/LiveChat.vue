@@ -1,15 +1,27 @@
 <script lang="ts" setup>
 import { ref, computed, nextTick, watch } from "vue";
 import { auth } from "@/services/firebase";
-import { useFirebaseStore } from "../stores/firebaseStore";
+import { Timestamp } from "firebase/firestore";
+import type { Message } from "@/services/yatzy/types";
 
-const isChatActive = ref(false);
+interface Props {
+  messages: Message[];
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: "post-message", message: string): void;
+  (e: "delete-msg", dockId: string, messageUserUid: string): void;
+  (e: "edit-msg", dockId: string, messageUserUid: string): void;
+  (e: "display-date", firebaseDate: Timestamp): void;
+}>();
+
+const isChatActive = ref<boolean>(false);
 const newMessage = ref<string>("");
 const messagesContainer = ref<HTMLElement | null>(null);
 
 const chatArrow = computed(() => (isChatActive.value ? "▲" : "▼"));
-
-const firebaseStore = useFirebaseStore();
 
 function scrollChatToBottom() {
   if (messagesContainer.value) {
@@ -18,7 +30,7 @@ function scrollChatToBottom() {
 }
 
 watch(
-  () => firebaseStore.messages.length,
+  () => props.messages.length,
   async () => {
     await nextTick();
     scrollChatToBottom();
@@ -26,7 +38,7 @@ watch(
 );
 
 const sendMessage = () => {
-  firebaseStore.postMessage(newMessage.value);
+  emit("post-message", newMessage.value);
   newMessage.value = "";
 };
 </script>
@@ -40,8 +52,8 @@ const sendMessage = () => {
       <h2 class="green">Live Chat</h2>
     </div>
     <div v-if="isChatActive" class="chat-content">
-      <div v-if="firebaseStore.messages" class="messages" ref="messagesContainer">
-        <div class="message" v-for="msg in firebaseStore.messages" :key="msg.id">
+      <div v-if="props.messages" class="messages" ref="messagesContainer">
+        <div class="message" v-for="msg in props.messages" :key="msg.id">
           <img
             :src="msg.profilePicture ? msg.profilePicture : './src/images/default-avatar.jpeg'"
             alt="User Avatar"
@@ -49,13 +61,13 @@ const sendMessage = () => {
             height="27"
           />
           <div class="message-content">
-            <p class="time">{{ firebaseStore.displayDate(msg.createdAt) }}</p>
+            <p class="time">{{ emit("display-date", msg.createdAt) }}</p>
             <h4>{{ msg.displayName }} : {{ msg.text }}</h4>
             <div class="chat-btns" v-show="auth.currentUser?.uid === msg.user">
-              <button class="delete-btn" @click="firebaseStore.deleteMessage(msg.id, msg.user)">
+              <button class="delete-btn" @click="emit('delete-msg', msg.id, msg.user)">
                 <v-icon name="md-delete" style="font-size: 1em" />
               </button>
-              <button class="edit-btn" @click="firebaseStore.editMessage(msg.id, msg.user)">
+              <button class="edit-btn" @click="emit('edit-msg', msg.id, msg.user)">
                 <v-icon name="fa-edit" style="font-size: 1em" />
               </button>
             </div>

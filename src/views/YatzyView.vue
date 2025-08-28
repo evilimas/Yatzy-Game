@@ -26,30 +26,29 @@ watch(
   }
 );
 
-
-const handleCloseModal = () => {
+const handleCloseModal = (): void => {
   showWinnerModal.value = false;
 };
-const handleNewGame = () => {
+const handleNewGame = (): void => {
   store.resetGame();
   showWinnerModal.value = false;
 };
-const handlePlayerUpdate = (players: string) => {
+const handlePlayerUpdate = (players: string): void => {
   if (players === "increase") {
     store.players++;
   } else if (players === "decrease" && store.players > 1) {
     store.players--;
   }
 };
-const handleStartGame = () => {
+const handleStartGame = (): void => {
   store.gameStarted = true;
 };
-const handlePlaceScore = (score: string | null) => {
+const handlePlaceScore = (score: string | null): void => {
   if (score) {
     store.nextTurn(score);
   }
 };
-const handleRestartGame = () => {
+const handleRestartGame = (): void => {
   store.resetGame();
   store.gameStarted = false;
 };
@@ -105,10 +104,16 @@ const handleRestartGame = () => {
     <HighScore :isGameFinished="store.isGameFinished" />
   </div>
   <div class="live-chat">
-    <LiveChat />
+    <LiveChat
+      :messages="firebaseStore.messages"
+      @post-message="firebaseStore.postMessage"
+      @delete-msg="firebaseStore.deleteMessage"
+      @edit-msg="firebaseStore.editMessage"
+      @display-date="firebaseStore.displayDate"
+    />
   </div>
   <div>
-    <Users />
+    <Users :users="firebaseStore.onlineUsers" />
   </div>
 </template>
 

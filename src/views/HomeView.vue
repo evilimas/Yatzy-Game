@@ -31,7 +31,7 @@ const userFirstName = firebaseStore.user?.displayName
         {{ die }}
       </h2>
     </div>
-    <div>
+    <div class="input-container">
       <label for="players"
         >Hvor Mange spillere?
         <input
@@ -48,7 +48,10 @@ const userFirstName = firebaseStore.user?.displayName
       <nav>
         <RouterLink to="/yatzy">Spill Yatzy Lokalt</RouterLink>
         <p>eller</p>
-        <RouterLink to="/yatzy-mp">Spill Yatzy Online</RouterLink>
+        <div class="mp-container">
+          <RouterLink to="/yatzy-mp">Spill Yatzy Online</RouterLink>
+          <p>- Under utvikling</p>
+        </div>
       </nav>
     </div>
   </main>
@@ -63,6 +66,10 @@ h2 {
 }
 span {
   text-decoration: underline;
+}
+
+input {
+  width: 20%;
 }
 .navbar {
   display: flex;
@@ -80,5 +87,8 @@ img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+}
+.mp-container {
+  align-items: center;
 }
 </style>

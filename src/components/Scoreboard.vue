@@ -7,11 +7,13 @@ interface Props {
   activePlayer: number;
   completeScoreboards: CompleteScoreboard[];
 }
+
 defineProps<Props>();
 
 const emit = defineEmits<{
-  nextTurn: [string | null];
-  placeScore: [string | null];
+  // nextTurn: [string | null];
+  // placeScore: [string | null];
+  (e: "placeScore", score: string | null): void;
 }>();
 </script>
 

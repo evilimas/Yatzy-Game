@@ -1,7 +1,11 @@
 <script lang="ts" setup>
-import { useFirebaseStore } from "@/stores/firebaseStore";
+import type { User } from "firebase/auth";
 
-const firebaseStore = useFirebaseStore();
+interface Props {
+  users: User[];
+}
+
+defineProps<Props>();
 </script>
 
 <template>
@@ -9,7 +13,7 @@ const firebaseStore = useFirebaseStore();
     <div class="users-online">
       <h3>Brukere Online:</h3>
       <ul>
-        <li v-for="onlineUser in firebaseStore.onlineUsers" :key="onlineUser.uid">
+        <li v-for="onlineUser in users" :key="onlineUser.uid">
           {{ onlineUser.displayName }}
         </li>
       </ul>

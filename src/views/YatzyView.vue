@@ -112,7 +112,7 @@ const handleRestartGame = (): void => {
       @display-date="firebaseStore.displayDate"
     />
   </div>
-  <div>
+  <div class="users">
     <Users :users="firebaseStore.onlineUsers" />
   </div>
 </template>
@@ -137,8 +137,8 @@ h1 {
 }
 .high-scores {
   position: fixed;
-  bottom: 0;
-  right: 0;
+  bottom: 5px;
+  right: 5px;
   width: auto;
   max-height: 400px;
   overflow-y: auto;
@@ -149,7 +149,7 @@ h1 {
 .live-chat {
   position: fixed;
   top: 60px;
-  right: 0;
+  right: 10px;
   width: auto;
   max-height: 400px;
   overflow-y: auto;
@@ -166,5 +166,10 @@ h1 {
   color: #fff;
   padding: 0.8em;
   border-bottom: 2px solid #444;
+}
+.users {
+  position: fixed;
+  top: 60px;
+  left: 10px;
 }
 </style>

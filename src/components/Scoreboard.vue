@@ -12,7 +12,6 @@ defineProps<Props>();
 
 const emit = defineEmits<{
   // nextTurn: [string | null];
-  // placeScore: [string | null];
   (e: "placeScore", score: string | null): void;
 }>();
 </script>
@@ -98,12 +97,7 @@ td {
 }
 
 .disabled {
-  /* pointer-events: none; */
   background-color: #f0f0f0 !important;
   color: #000000;
 }
-/* .big-die-icon {
-  font-size: 1.5em;
-  vertical-align: middle;
-} */
 </style>

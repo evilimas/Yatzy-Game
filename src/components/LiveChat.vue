@@ -44,44 +44,42 @@ const sendMessage = () => {
 </script>
 
 <template>
-  <div class="live-chat">
-    <div class="live-chat-header">
-      <button @click="isChatActive = !isChatActive">
-        {{ chatArrow }}
-      </button>
-      <h2 class="green">Live Chat</h2>
-    </div>
-    <div v-if="isChatActive" class="chat-content">
-      <div v-if="props.messages" class="messages" ref="messagesContainer">
-        <div class="message" v-for="msg in props.messages" :key="msg.id">
-          <img
-            :src="msg.profilePicture ? msg.profilePicture : './src/images/default-avatar.jpeg'"
-            alt="User Avatar"
-            width="27"
-            height="27"
-          />
-          <div class="message-content">
-            <p class="time">{{ emit("display-date", msg.createdAt) }}</p>
-            <h4>{{ msg.displayName }} : {{ msg.text }}</h4>
-            <div class="chat-btns" v-show="auth.currentUser?.uid === msg.user">
-              <button class="delete-btn" @click="emit('delete-msg', msg.id, msg.user)">
-                <v-icon name="md-delete" style="font-size: 1em" />
-              </button>
-              <button class="edit-btn" @click="emit('edit-msg', msg.id, msg.user)">
-                <v-icon name="fa-edit" style="font-size: 1em" />
-              </button>
-            </div>
+  <div class="live-chat-header">
+    <button @click="isChatActive = !isChatActive">
+      {{ chatArrow }}
+    </button>
+    <h3 class="green">Live Chat</h3>
+  </div>
+  <div v-if="isChatActive" class="chat-content">
+    <div v-if="props.messages" class="messages" ref="messagesContainer">
+      <div class="message" v-for="msg in props.messages" :key="msg.id">
+        <img
+          :src="msg.profilePicture ? msg.profilePicture : './src/images/default-avatar.jpeg'"
+          alt="User Avatar"
+          width="27"
+          height="27"
+        />
+        <div class="message-content">
+          <p class="time">{{ emit("display-date", msg.createdAt) }}</p>
+          <h4>{{ msg.displayName }} : {{ msg.text }}</h4>
+          <div class="chat-btns" v-show="auth.currentUser?.uid === msg.user">
+            <button class="delete-btn" @click="emit('delete-msg', msg.id, msg.user)">
+              <v-icon name="md-delete" style="font-size: 1em" />
+            </button>
+            <button class="edit-btn" @click="emit('edit-msg', msg.id, msg.user)">
+              <v-icon name="fa-edit" style="font-size: 1em" />
+            </button>
           </div>
         </div>
       </div>
-      <div v-else class="no-chat">
-        <p>ingen meldinger</p>
-      </div>
-      <div class="input-container">
-        <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type your message..." />
-        <button @click="sendMessage">Send</button>
-        <!-- <button @click="firebaseStore.fetchOnceAndRenderMessagesFromDB">Fetch Messages</button> -->
-      </div>
+    </div>
+    <div v-else class="no-chat">
+      <p>ingen meldinger</p>
+    </div>
+    <div class="input-container">
+      <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type your message..." />
+      <button @click="sendMessage">Send</button>
+      <!-- <button @click="firebaseStore.fetchOnceAndRenderMessagesFromDB">Fetch Messages</button> -->
     </div>
   </div>
 </template>
@@ -104,14 +102,7 @@ const sendMessage = () => {
   gap: 5px;
   position: relative;
 }
-.live-chat {
-  background: #f9f9f9;
-  padding: 1em;
-  border-radius: 8px;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-}
+
 .live-chat-header {
   display: flex;
   align-items: center;
@@ -142,6 +133,10 @@ img {
 }
 h4 {
   flex-wrap: wrap;
+}
+h3 {
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 input {
   width: 100%;

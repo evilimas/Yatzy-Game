@@ -75,7 +75,6 @@ legend {
 }
 .dice-span {
   font-size: 330%;
-  /* background: lightblue; */
   line-height: 90%;
 }
 .dice {
@@ -93,12 +92,5 @@ fieldset {
 .button-row {
   display: flex;
   flex-direction: column;
-  /* width: 100%; */
-}
-.btn-div {
-  /* text-align: center;
-  width: 100%; */
-}
-.primary-btn {
 }
 </style>

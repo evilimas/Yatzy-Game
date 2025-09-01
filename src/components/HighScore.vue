@@ -1,20 +1,29 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useFirebaseStore } from "@/stores/firebaseStore";
+import type { HighScore, LocalHighScore } from "@/services/yatzy/types";
 
 const firebaseStore = useFirebaseStore();
 
-// interface Props {
-//   scores: { name: string; value: number; date: Date }[];
-// }
 interface Props {
   isGameFinished: boolean;
+  scores: LocalHighScore[];
 }
 defineProps<Props>();
 
 const isHighScoreActive = ref(false);
+const isLocalHighScoreActive = ref(true);
+const isOnlineHighScoreActive = ref(false);
 
 const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"));
+
+const turnCorrectScores = (online: boolean, local: boolean) => {
+  if (online) {
+    local = false;
+  } else if (local) {
+    online = false;
+  }
+};
 </script>
 
 <template>
@@ -25,8 +34,10 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
     </button>
     <h3 class="green">Toppresultater</h3>
   </div>
+  <button @click="turnCorrectScores(false, true)">Lokalt</button>
+  <button @click="turnCorrectScores(true, false)">Online</button>
   <div>
-    <div class="high-score" v-if="isHighScoreActive">
+    <div class="high-score online" v-if="isHighScoreActive && isOnlineHighScoreActive">
       <ol v-if="firebaseStore.highScores.length > 0">
         <li v-for="(score, index) in firebaseStore.highScores" :key="index">
           {{ score.displayName }} : {{ score.score }} Poeng -
@@ -34,7 +45,18 @@ const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"))
         </li>
       </ol>
       <div v-else>
-        <h3>Ingen Toppresultater</h3>
+        <h3>Ingen Online Toppresultater</h3>
+      </div>
+    </div>
+    <div class="high-score local" v-if="isHighScoreActive && isLocalHighScoreActive">
+      <ol v-if="scores.length > 0">
+        <li v-for="(score, index) in scores" :key="index">
+          {{ score.name }} : {{ score.score }} Poeng -
+          {{ score.date }}
+        </li>
+      </ol>
+      <div v-else>
+        <h3>Ingen Lokale Toppresultater</h3>
       </div>
     </div>
   </div>

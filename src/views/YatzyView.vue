@@ -101,7 +101,7 @@ const handleRestartGame = (): void => {
     />
   </div>
   <div class="high-scores">
-    <HighScore :isGameFinished="store.isGameFinished" />
+    <HighScore :isGameFinished="store.isGameFinished" :scores="store.scores" />
   </div>
   <div class="live-chat">
     <LiveChat

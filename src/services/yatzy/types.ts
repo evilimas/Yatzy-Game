@@ -98,6 +98,11 @@ interface HighScore {
   score: string;
   date: Timestamp;
 }
+interface LocalHighScore {
+  name: string;
+  score: number;
+  date: string;
+}
 
 export { dieValues };
 export type {
@@ -112,4 +117,5 @@ export type {
   CompleteScoreboard,
   Message,
   HighScore,
+  LocalHighScore,
 };

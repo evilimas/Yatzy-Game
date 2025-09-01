@@ -8,6 +8,8 @@ import type {
   Scoreboard,
   DieViewStateStyle,
   CompleteScoreboard,
+  HighScore,
+  LocalHighScore,
 } from "@/services/yatzy/types";
 
 export const yatzyStore = defineStore("scoreBoard", () => {
@@ -22,7 +24,7 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const createEmptyDice = Array.from({ length: 5 }, () => null);
 
   // reactive state
-  const scores = ref<{ name: string; value: number; date: string }[]>([]);
+  const scores = ref<LocalHighScore[]>([]);
   const players = ref<number>(1);
   const gameStarted = ref<boolean>(false);
   const activePlayer = ref<number>(1);
@@ -33,10 +35,10 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   const throwCountRemaining = ref(3);
   const scoreboards = reactive<Scoreboard[]>(createEmptyScoreboards(players.value));
 
-  // const savedScores = localStorage.getItem("highScores");
-  // if (savedScores) {
-  //   scores.value = JSON.parse(savedScores);
-  // }
+  const savedScores = localStorage.getItem("highScores");
+  if (savedScores) {
+    scores.value = JSON.parse(savedScores);
+  }
 
   // action
   const nextTurn = (combination: string) => {
@@ -84,32 +86,36 @@ export const yatzyStore = defineStore("scoreBoard", () => {
     gameStarted.value = false;
   };
 
-  // function addAllHighScores() {
-  //   completeScoreboards.value.forEach((scoreboard, idx) => {
-  //     const playerName = `Spiller ${idx + 1}`;
-  //     const playerScore = scoreboard.total ?? 0;
-  //     const date = new Date();
-  //     const playerDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-  //       2,
-  //       "0"
-  //     )}-${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(
-  //       2,
-  //       "0"
-  //     )}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(
-  //       2,
-  //       "0"
-  //     )}`;
+  function addAllHighScores() {
+    completeScoreboards.value.forEach((scoreboard, idx) => {
+      const playerName = `Spiller ${idx + 1}`;
+      const playerScore = scoreboard.total ?? 0;
+      const date = new Date();
+      const playerDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(
+        2,
+        "0"
+      )}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(
+        2,
+        "0"
+      )}`;
 
-  //     addHighScore(playerName, playerScore, playerDate);
-  //   });
-  // }
+      addHighScore({
+        name: playerName,
+        score: playerScore,
+        date: playerDate,
+      });
+    });
+  }
 
-  // function addHighScore(name: string, value: number, date: string) {
-  //   scores.value.push({ name, value, date });
-  //   scores.value.sort((a, b) => b.value - a.value);
-  //   scores.value = scores.value.slice(0, 10);
-  //   localStorage.setItem("highScores", JSON.stringify(scores.value));
-  // }
+  function addHighScore(highScore: LocalHighScore) {
+    scores.value.push(highScore);
+    scores.value.sort((a, b) => b.score - a.score);
+    scores.value = scores.value.slice(0, 10);
+    localStorage.setItem("highScores", JSON.stringify(scores.value));
+  }
 
   // computed
   const completeScoreboards = computed(() =>
@@ -140,12 +146,11 @@ export const yatzyStore = defineStore("scoreBoard", () => {
   // watch
   watch(players, setupScoreboardsFromPlayerCount);
 
-  // watch
-  // watch(isGameFinished, (finished) => {
-  //   if (finished) {
-  //     addAllHighScores();
-  //   }
-  // });
+  watch(isGameFinished, (finished) => {
+    if (finished) {
+      addAllHighScores();
+    }
+  });
 
   // viewstate funksjon
   const winner = () => {

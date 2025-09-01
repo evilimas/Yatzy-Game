@@ -153,21 +153,21 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  //   const fetchOnceAndRenderMessagesFromDB = async () => {
-  //     messages.value = [];
-  //     const querySnapshot = await getDocs(collection(db, "messages"));
-  //     querySnapshot.forEach((doc) => {
-  //       console.log(`${doc.id}: ${doc.data().messageBody}`);
-  //       messages.value.unshift({
-  //         // displayName: doc.data().name,
-  //         id: doc.id,
-  //         user: doc.data().uid,
-  //         displayName: doc.data().displayName,
-  //         text: doc.data().messageBody,
-  //         createdAt: doc.data().createdAt,
-  //       });
+  // const fetchOnceAndRenderMessagesFromDB = async () => {
+  //   messages.value = [];
+  //   const querySnapshot = await getDocs(collection(db, "messages"));
+  //   querySnapshot.forEach((doc) => {
+  //     console.log(`${doc.id}: ${doc.data().messageBody}`);
+  //     messages.value.unshift({
+  //       displayName: doc.data().name,
+  //       id: doc.id,
+  //       user: doc.data().uid,
+  //       displayName: doc.data().displayName,
+  //       text: doc.data().messageBody,
+  //       createdAt: doc.data().createdAt,
   //     });
-  //   };
+  //   });
+  // };
 
   const fetchInRealTimeAndRenderMessagesFromDB = async () => {
     const postsRef = collection(db, "messages");
@@ -291,6 +291,16 @@ export const useFirebaseStore = defineStore("firebase", () => {
     });
   };
 
+  // multiplayer functions
+
+  // const gameRef = await addDoc(collection(db, "games"), {
+  //   players: [{ uid: user.uid, displayName: user.displayName }],
+  //   scoreboards: [],
+  //   dice: [0, 0, 0, 0, 0],
+  //   status: "waiting",
+  //   createdAt: serverTimestamp(),
+  // });
+
   return {
     user,
     messages,
@@ -298,6 +308,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     // sortedMessagesByDate,
     highScores,
     fetchHighScores,
+    addHighScoresToDB,
     updateUserProfile,
     addMessageToDB,
     postMessage,

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { auth } from "@/services/firebase";
-import type { Message, HighScore } from "@/services/yatzy/types";
+import type { Message, HighScore, GameRoomData } from "@/services/yatzy/types";
 import type { User } from "firebase/auth";
 import {
   onAuthStateChanged,
@@ -27,6 +27,7 @@ import {
   updateDoc,
   setDoc,
   Firestore,
+  arrayUnion,
   doc,
 } from "firebase/firestore";
 import router from "@/router";
@@ -40,12 +41,16 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const highScores = ref<HighScore[]>([]);
   const onlineUsers = ref<User[]>([]);
 
+  const allGameRooms = ref<{ id: string; data: GameRoomData }[]>([]);
+
   onAuthStateChanged(auth, (u) => {
     if (u) {
       user.value = u;
       setUserOnline(u);
       fetchInRealTimeAndRenderMessagesFromDB();
       fetchOnlineUsers();
+      fetchHighScores();
+      fetchAllGameRooms();
     } else {
       user.value = null;
       router.push("/");
@@ -293,15 +298,50 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // multiplayer functions
 
-  // const gameRef = await addDoc(collection(db, "games"), {
-  //   players: [{ uid: user.uid, displayName: user.displayName }],
-  //   scoreboards: [],
-  //   dice: [0, 0, 0, 0, 0],
-  //   status: "waiting",
-  //   createdAt: serverTimestamp(),
-  // });
+  const createGameRoom = async (user: User) => {
+    const gameRef = await addDoc(collection(db, "games"), {
+      players: [{ uid: user.uid, displayName: user.displayName }],
+      scoreboards: [],
+      dice: [0, 0, 0, 0, 0],
+      activePlayer: { uid: user.uid, displayName: user.displayName },
+      status: "waiting",
+      createdAt: serverTimestamp(),
+    });
+    console.log("Game room created with ID:", gameRef.id);
+    return gameRef.id;
+  };
+
+  const joinGameRoom = async (gameId: string, user: User) => {
+    await updateDoc(doc(db, "games", gameId), {
+      players: arrayUnion({ uid: user.uid, displayName: user.displayName }),
+      // status: "playing",
+    });
+  };
+
+  const listenToGameRoom = (gameId: string, callback: (gameData: GameRoomData) => void) => {
+    return onSnapshot(doc(db, "games", gameId), (docSnap) => {
+      const data = docSnap.data();
+      if (data) {
+        callback(data as GameRoomData);
+      }
+    });
+  };
+
+  const fetchAllGameRooms = async () => {
+    const gamesCollectionRef = collection(db, "games");
+    onSnapshot(gamesCollectionRef, (snapshot) => {
+      allGameRooms.value = [];
+      snapshot.forEach((doc) => {
+        allGameRooms.value.push({
+          id: doc.id,
+          data: doc.data() as GameRoomData,
+        });
+      });
+    });
+  };
 
   return {
+    db,
     user,
     messages,
     onlineUsers,
@@ -321,5 +361,10 @@ export const useFirebaseStore = defineStore("firebase", () => {
     signInWithEmail,
     createAccount,
     signOutUser,
+    createGameRoom,
+    joinGameRoom,
+    listenToGameRoom,
+    fetchAllGameRooms,
+    allGameRooms,
   };
 });

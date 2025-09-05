@@ -104,6 +104,15 @@ interface LocalHighScore {
   date: string;
 }
 
+interface GameRoomData {
+  players: { uid: string; displayName: string }[];
+  scoreboards: Scoreboard[];
+  dice: number[];
+  activePlayer: string;
+  status: string;
+  createdAt: Timestamp;
+}
+
 export { dieValues };
 export type {
   Die,
@@ -118,4 +127,5 @@ export type {
   Message,
   HighScore,
   LocalHighScore,
+  GameRoomData,
 };

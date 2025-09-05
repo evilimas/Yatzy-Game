@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useFirebaseStore } from "@/stores/firebaseStore";
 import type { HighScore, LocalHighScore } from "@/services/yatzy/types";
-
-const firebaseStore = useFirebaseStore();
 
 interface Props {
   isGameFinished: boolean;
   scores: LocalHighScore[];
+  onlineScores: HighScore[];
 }
 defineProps<Props>();
 
@@ -18,28 +16,29 @@ const isOnlineHighScoreActive = ref(false);
 const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"));
 
 const turnCorrectScores = (online: boolean, local: boolean) => {
-  if (online) {
-    local = false;
-  } else if (local) {
-    online = false;
-  }
+  isOnlineHighScoreActive.value = online;
+  isLocalHighScoreActive.value = local;
 };
 </script>
 
 <template>
-  <div></div>
   <div class="high-score-header">
     <button @click="isHighScoreActive = !isHighScoreActive">
       {{ highScoreArrow }}
     </button>
     <h3 class="green">Toppresultater</h3>
   </div>
-  <button @click="turnCorrectScores(false, true)">Lokalt</button>
-  <button @click="turnCorrectScores(true, false)">Online</button>
+
   <div>
     <div class="high-score online" v-if="isHighScoreActive && isOnlineHighScoreActive">
-      <ol v-if="firebaseStore.highScores.length > 0">
-        <li v-for="(score, index) in firebaseStore.highScores" :key="index">
+      <button @click="turnCorrectScores(false, true)" :class="{ active: isLocalHighScoreActive }">
+        Lokale
+      </button>
+      <button @click="turnCorrectScores(true, false)" :class="{ active: isOnlineHighScoreActive }">
+        Online
+      </button>
+      <ol v-if="onlineScores.length > 0">
+        <li v-for="(score, index) in onlineScores" :key="index">
           {{ score.displayName }} : {{ score.score }} Poeng -
           {{ score.date }}
         </li>
@@ -49,6 +48,12 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
       </div>
     </div>
     <div class="high-score local" v-if="isHighScoreActive && isLocalHighScoreActive">
+      <button @click="turnCorrectScores(false, true)" :class="{ active: isLocalHighScoreActive }">
+        Lokale
+      </button>
+      <button @click="turnCorrectScores(true, false)" :class="{ active: isOnlineHighScoreActive }">
+        Online
+      </button>
       <ol v-if="scores.length > 0">
         <li v-for="(score, index) in scores" :key="index">
           {{ score.name }} : {{ score.score }} Poeng -
@@ -80,5 +85,8 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
 h3 {
   font-weight: 600;
   font-size: 1.3em;
+}
+button.active {
+  border: solid 3px #cfcfcf;
 }
 </style>

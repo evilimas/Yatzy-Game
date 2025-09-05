@@ -49,8 +49,8 @@ const loginPage = ref(true);
         </div>
       </div>
     </section>
-    <section id="logged-out-view">
-      <h2 v-if="!loginPage">Opprett en konto</h2>
+    <section id="logged-out-view" v-if="!loginPage">
+      <h2>Opprett en konto</h2>
       <div class="container">
         <form action="">
           <input v-model="name" id="create-name-input" type="text" placeholder="Navn" required />

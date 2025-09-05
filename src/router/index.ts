@@ -33,6 +33,12 @@ const router = createRouter({
       component: () => import("../views/YatzyMPView.vue"),
       props: true,
     },
+    {
+      path: "/yatzy-mp/:roomId",
+      name: "yatzy-mp-room",
+      component: () => import("../views/GameRoom.vue"),
+      props: true,
+    },
   ],
 });
 

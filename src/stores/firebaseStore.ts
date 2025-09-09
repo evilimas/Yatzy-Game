@@ -300,6 +300,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   const createGameRoom = async (user: User) => {
     const gameRef = await addDoc(collection(db, "games"), {
+      createdBy: { uid: user.uid, displayName: user.displayName },
       players: [{ uid: user.uid, displayName: user.displayName }],
       scoreboards: [],
       dice: [0, 0, 0, 0, 0],
@@ -328,8 +329,12 @@ export const useFirebaseStore = defineStore("firebase", () => {
   };
 
   const fetchAllGameRooms = async () => {
-    const gamesCollectionRef = collection(db, "games");
-    onSnapshot(gamesCollectionRef, (snapshot) => {
+    const q = query(
+      collection(db, "games"),
+      where("createdAt", "!=", null),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
       allGameRooms.value = [];
       snapshot.forEach((doc) => {
         allGameRooms.value.push({

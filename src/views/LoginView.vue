@@ -6,7 +6,7 @@ const firebaseStore = useFirebaseStore();
 const email = ref<string>("");
 const password = ref<string>("");
 const name = ref<string>("");
-const loginPage = ref(true);
+const loginPage = ref<boolean>(true);
 </script>
 
 <template>

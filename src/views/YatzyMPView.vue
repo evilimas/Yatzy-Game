@@ -3,21 +3,31 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useFirebaseStore } from "@/stores/firebaseStore";
 import type { User } from "firebase/auth";
+import type { GameRoomData } from "@/services/yatzy/types";
 
 const firebaseStore = useFirebaseStore();
 const router = useRouter();
 const user = ref<User | null>(firebaseStore.user);
 
 const handleCreateGameRoom = async () => {
-  if (user.value) {
-    const roomId = await firebaseStore.createGameRoom(user.value);
-    if (roomId) {
-      router.push(`/yatzy-mp/${roomId}`);
+  const allreadyCreated = firebaseStore.allGameRooms.some(
+    (room: { id: string; data: GameRoomData }) => room.data.createdBy.uid === user.value?.uid
+  );
+
+  if (!allreadyCreated) {
+    if (user.value) {
+      const roomId = await firebaseStore.createGameRoom(user.value);
+      if (roomId) {
+        router.push(`/yatzy-mp/${roomId}`);
+      } else {
+        console.log("Game room ID not found.");
+      }
     } else {
-      console.log("Game room ID not found.");
+      console.log("User is not logged in.");
     }
   } else {
-    console.log("User is not logged in.");
+    console.log("User has already created a game room.");
+    alert("Du har allerede opprettet et spillrom.");
   }
 };
 
@@ -30,12 +40,12 @@ const selectGameRoom = (roomId: string) => {
   }
 };
 
-watch(
-  () => firebaseStore.listenToGameRoom,
-  (newRooms) => {
-    console.log("Updated game rooms:", newRooms);
-  }
-);
+// watch(
+//   () => firebaseStore.listenToGameRoom,
+//   (newRooms) => {
+//     console.log("Updated game rooms:", newRooms);
+//   }
+// );
 </script>
 
 <template>
@@ -47,19 +57,33 @@ watch(
     <p>Velkommen til Yatzy Multiplayer!</p>
     <button @click="handleCreateGameRoom">Opprett Spillrom</button>
     <p>Spillromene:</p>
-    <div>
-      <table v-for="room in firebaseStore.allGameRooms" :key="room.id">
-        <th>
-          {{ room.data.players[0].displayName }}
-        </th>
-        {{
-          room.data.players.length
-        }}
-        spiller(e) -
-        <tr>
-          <button @click="selectGameRoom(room.id)">Bli med i rommet</button>
-        </tr>
+    <div v-if="firebaseStore.allGameRooms.length > 0">
+      <table>
+        <thead>
+          <th>Opprettet av</th>
+          <th>Spillere</th>
+          <th>Status</th>
+        </thead>
+        <tbody>
+          <tr v-for="room in firebaseStore.allGameRooms" :key="room.id">
+            <td>
+              {{ room.data.createdBy.displayName }}
+            </td>
+            <td>
+              {{ room.data.players.length }}
+            </td>
+            <td>
+              {{ room.data.status }}
+            </td>
+            <td>
+              <button @click="selectGameRoom(room.id)">Bli med</button>
+            </td>
+          </tr>
+        </tbody>
       </table>
+    </div>
+    <div v-else>
+      <h3>Ingen spillrom tilgjengelig.</h3>
     </div>
   </div>
 </template>
@@ -84,5 +108,8 @@ td {
   padding: 4px;
   color: rgb(228, 228, 228);
   font-weight: 500;
+}
+h3 {
+  color: rgb(238, 238, 238);
 }
 </style>

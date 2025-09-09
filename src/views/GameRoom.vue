@@ -4,18 +4,18 @@ import { useRoute } from "vue-router";
 import type { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useFirebaseStore } from "@/stores/firebaseStore";
-import type { GameData } from "/services/yatzy/types";
+import type { GameRoomData } from "@/services/yatzy/types";
 
 const route = useRoute();
 const roomId = ref<string>(route.params.roomId as string);
 const users = ref<{ uid: string; displayName: string }[]>([]);
-const gameData = ref<GameData | null>(null);
+const gameData = ref<GameRoomData | null>(null);
 const firebaseStore = useFirebaseStore();
 
 onMounted(async () => {
   const gameDoc = await getDoc(doc(firebaseStore.db, "games", roomId.value));
   if (gameDoc.exists()) {
-    gameData.value = gameDoc.data();
+    gameData.value = gameDoc.data() as GameRoomData;
     users.value = gameData.value.players || [];
   }
 });
@@ -32,7 +32,5 @@ onMounted(async () => {
     <p v-if="gameData">Active Player: {{ gameData.activePlayer.displayName }}</p>
   </div>
 </template>
-
-<style></style>
 
 <style></style>

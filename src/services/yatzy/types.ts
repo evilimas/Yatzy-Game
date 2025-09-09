@@ -105,10 +105,11 @@ interface LocalHighScore {
 }
 
 interface GameRoomData {
+  createdBy: { uid: string; displayName: string };
   players: { uid: string; displayName: string }[];
   scoreboards: Scoreboard[];
   dice: number[];
-  activePlayer: string;
+  activePlayer: { uid: string; displayName: string };
   status: string;
   createdAt: Timestamp;
 }

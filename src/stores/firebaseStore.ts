@@ -1,7 +1,14 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { emptyScoreboard, scoreboardFunctions } from "@/services/yatzy/scoreboard";
 import { auth } from "@/services/firebase";
-import type { Message, HighScore, GameRoomData } from "@/services/yatzy/types";
+import type {
+  Message,
+  HighScore,
+  GameRoomData,
+  CompleteScoreboard,
+  CompleteScoreboardWithUser,
+} from "@/services/yatzy/types";
 import type { User } from "firebase/auth";
 import {
   onAuthStateChanged,
@@ -19,6 +26,7 @@ import {
   addDoc,
   serverTimestamp,
   getDocs,
+  getDoc,
   onSnapshot,
   query,
   where,
@@ -42,6 +50,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const onlineUsers = ref<User[]>([]);
 
   const allGameRooms = ref<{ id: string; data: GameRoomData }[]>([]);
+  const gameData = ref<GameRoomData | null>(null);
 
   onAuthStateChanged(auth, (u) => {
     if (u) {
@@ -51,6 +60,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       fetchOnlineUsers();
       fetchHighScores();
       fetchAllGameRooms();
+      // listenToGameRoom();
     } else {
       user.value = null;
       router.push("/");
@@ -302,7 +312,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     const gameRef = await addDoc(collection(db, "games"), {
       createdBy: { uid: user.uid, displayName: user.displayName },
       players: [{ uid: user.uid, displayName: user.displayName }],
-      scoreboards: [],
+      scoreboards: [emptyScoreboard()],
       dice: [0, 0, 0, 0, 0],
       activePlayer: { uid: user.uid, displayName: user.displayName },
       status: "waiting",
@@ -312,18 +322,68 @@ export const useFirebaseStore = defineStore("firebase", () => {
     return gameRef.id;
   };
 
+  // const joinGameRoom = async (gameId: string, user: User) => {
+  //   await updateDoc(doc(db, "games", gameId), {
+  //     players: arrayUnion({ uid: user.uid, displayName: user.displayName }),
+  //     scoreboards: arrayUnion({ board: emptyScoreboard(), userId: user.uid }),
+  //     // status: "playing",
+  //   });
+  // };
+  // const joinGameRoom = async (gameId: string, user: User) => {
+  //   const gameDocRef = doc(db, "games", gameId);
+  //   const gameSnap = await getDoc(gameDocRef);
+  //   if (!gameSnap.exists()) return;
+
+  //   const data = gameSnap.data();
+  //   // Add player if not already present
+  //   const players = data.players || [];
+  //   const scoreboards = data.scoreboards || [];
+
+  //   // Check if user is already in the game
+  //   if (!players.some((p: User) => p.uid === user.uid)) {
+  //     players.push({ uid: user.uid, displayName: user.displayName });
+  //     scoreboards.push(emptyScoreboard());
+  //     await updateDoc(gameDocRef, {
+  //       players,
+  //       scoreboards,
+  //     });
+  //   }
+  // };
+
   const joinGameRoom = async (gameId: string, user: User) => {
-    await updateDoc(doc(db, "games", gameId), {
-      players: arrayUnion({ uid: user.uid, displayName: user.displayName }),
-      // status: "playing",
-    });
+    const gameDocRef = doc(db, "games", gameId);
+    const gameSnap = await getDoc(gameDocRef);
+    if (!gameSnap.exists()) return;
+
+    const data = gameSnap.data();
+    const players = data.players || [];
+    const scoreboards = data.scoreboards || [];
+
+    if (!players.some((p: User) => p.uid === user.uid)) {
+      players.push({ uid: user.uid, displayName: user.displayName });
+      scoreboards.push(emptyScoreboard());
+      await updateDoc(gameDocRef, {
+        players,
+        scoreboards,
+      });
+    }
   };
 
-  const listenToGameRoom = (gameId: string, callback: (gameData: GameRoomData) => void) => {
-    return onSnapshot(doc(db, "games", gameId), (docSnap) => {
-      const data = docSnap.data();
-      if (data) {
-        callback(data as GameRoomData);
+  // const listenToGameRoom = (gameId: string, callback: (gameData: GameRoomData) => void) => {
+  //   return onSnapshot(doc(db, "games", gameId), (docSnap) => {
+  //     const data = docSnap.data();
+  //     if (data) {
+  //       callback(data as GameRoomData);
+  //     }
+  //   });
+  // };
+  const listenToGameRoom = (gameId: string) => {
+    const gameRef = doc(db, "games", gameId);
+    return onSnapshot(gameRef, (snap) => {
+      if (snap.exists()) {
+        gameData.value = snap.data() as GameRoomData;
+      } else {
+        gameData.value = null;
       }
     });
   };
@@ -344,6 +404,19 @@ export const useFirebaseStore = defineStore("firebase", () => {
       });
     });
   };
+
+  const completeScoreboards = computed<CompleteScoreboard[]>(() => {
+    // if (!gameData.value || !gameData.value.scoreboards) return [];
+    return (
+      gameData.value?.scoreboards.map((sb) => {
+        const complete: CompleteScoreboard = { ...sb };
+        complete.sum = scoreboardFunctions.sum(sb);
+        complete.bonus = scoreboardFunctions.bonus(sb);
+        complete.total = scoreboardFunctions.total(sb);
+        return complete;
+      }) ?? []
+    );
+  });
 
   return {
     db,
@@ -371,5 +444,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     listenToGameRoom,
     fetchAllGameRooms,
     allGameRooms,
+    completeScoreboards,
+    gameData,
   };
 });

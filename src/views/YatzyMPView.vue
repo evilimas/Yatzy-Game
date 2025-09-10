@@ -60,9 +60,11 @@ const selectGameRoom = (roomId: string) => {
     <div v-if="firebaseStore.allGameRooms.length > 0">
       <table>
         <thead>
-          <th>Opprettet av</th>
-          <th>Spillere</th>
-          <th>Status</th>
+          <tr>
+            <th>Opprettet av</th>
+            <th>Spillere</th>
+            <th>Status</th>
+          </tr>
         </thead>
         <tbody>
           <tr v-for="room in firebaseStore.allGameRooms" :key="room.id">

@@ -35,6 +35,7 @@ type ScoreboardCombination = YatzyCombination | "sum" | "bonus" | "total";
 type CompleteScoreboard = {
   [K in ScoreboardCombination]?: number | null;
 };
+type CompleteScoreboardWithUser = CompleteScoreboard & { userId: string };
 
 interface DiceAndTurn {
   dice: Die[];
@@ -107,7 +108,7 @@ interface LocalHighScore {
 interface GameRoomData {
   createdBy: { uid: string; displayName: string };
   players: { uid: string; displayName: string }[];
-  scoreboards: Scoreboard[];
+  scoreboards: CompleteScoreboard[];
   dice: number[];
   activePlayer: { uid: string; displayName: string };
   status: string;
@@ -125,6 +126,7 @@ export type {
   DieViewStateStyle,
   ScoreboardCombination,
   CompleteScoreboard,
+  CompleteScoreboardWithUser,
   Message,
   HighScore,
   LocalHighScore,

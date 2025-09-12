@@ -238,6 +238,20 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
+  const deleteGameRoomfromDB = async (roomId: string) => {
+    await deleteDoc(doc(db, "games", roomId));
+  };
+
+  const deleteGameRoom = (roomId: string, roomUserUid: string) => {
+    if (auth.currentUser?.uid === roomUserUid) {
+      if (confirm("Er du sikker på at du vil slette spillrommet?")) {
+        deleteGameRoomfromDB(roomId);
+      }
+    } else {
+      alert("Du kan ikke slette andres spillrom");
+    }
+  };
+
   const postMessage = (message: string) => {
     const messageBody = message;
     const user = auth.currentUser;
@@ -313,10 +327,14 @@ export const useFirebaseStore = defineStore("firebase", () => {
       createdBy: { uid: user.uid, displayName: user.displayName },
       players: [{ uid: user.uid, displayName: user.displayName }],
       scoreboards: [emptyScoreboard()],
-      dice: [0, 0, 0, 0, 0],
+      dice: [1, 2, 3, 4, 5],
+      holdDie: [false, false, false, false, false],
       activePlayer: { uid: user.uid, displayName: user.displayName },
       status: "waiting",
+      gameStarted: false,
+      throwCount: 3,
       createdAt: serverTimestamp(),
+      uid: user?.uid,
     });
     console.log("Game room created with ID:", gameRef.id);
     return gameRef.id;
@@ -328,26 +346,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //     scoreboards: arrayUnion({ board: emptyScoreboard(), userId: user.uid }),
   //     // status: "playing",
   //   });
-  // };
-  // const joinGameRoom = async (gameId: string, user: User) => {
-  //   const gameDocRef = doc(db, "games", gameId);
-  //   const gameSnap = await getDoc(gameDocRef);
-  //   if (!gameSnap.exists()) return;
-
-  //   const data = gameSnap.data();
-  //   // Add player if not already present
-  //   const players = data.players || [];
-  //   const scoreboards = data.scoreboards || [];
-
-  //   // Check if user is already in the game
-  //   if (!players.some((p: User) => p.uid === user.uid)) {
-  //     players.push({ uid: user.uid, displayName: user.displayName });
-  //     scoreboards.push(emptyScoreboard());
-  //     await updateDoc(gameDocRef, {
-  //       players,
-  //       scoreboards,
-  //     });
-  //   }
   // };
 
   const joinGameRoom = async (gameId: string, user: User) => {
@@ -418,6 +416,47 @@ export const useFirebaseStore = defineStore("firebase", () => {
     );
   });
 
+  // Dice functions
+
+  const rollDie = () => Math.floor(Math.random() * 6) + 1;
+
+  const rollDice = async (roomId?: string) => {
+    const g = gameData.value;
+    if (!g || g.throwCount <= 0) return;
+
+    const newDice = g.dice.map((die, i) => (g.holdDie[i] ? die : rollDie()));
+    const newThrowCount = g.throwCount - 1;
+
+    // update local state
+    g.dice = newDice;
+    g.throwCount = newThrowCount;
+
+    if (roomId) {
+      await updateDoc(doc(db, "games", roomId), {
+        dice: newDice,
+        throwCount: newThrowCount,
+      });
+      console.log("Game room updated with ID:", roomId, "Dice:", newDice);
+    }
+  };
+
+  const holdDie = async (index: number, roomId?: string) => {
+    if (!gameData.value) return;
+    gameData.value.holdDie[index] = !gameData.value.holdDie[index];
+
+    if (roomId) {
+      await updateDoc(doc(db, "games", roomId), {
+        holdDie: gameData.value.holdDie,
+      });
+      console.log("Game room updated with ID:", roomId, "Hold Die:", gameData.value.holdDie);
+    }
+  };
+
+  const resetHoldDie = () => {
+    if (!gameData.value) return;
+    gameData.value.holdDie = [false, false, false, false, false];
+  };
+
   return {
     db,
     user,
@@ -446,5 +485,9 @@ export const useFirebaseStore = defineStore("firebase", () => {
     allGameRooms,
     completeScoreboards,
     gameData,
+    rollDice,
+    resetHoldDie,
+    holdDie,
+    deleteGameRoom,
   };
 });

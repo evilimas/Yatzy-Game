@@ -113,7 +113,7 @@ const handleRestartGame = (): void => {
       @post-message="firebaseStore.postMessage"
       @delete-msg="firebaseStore.deleteMessage"
       @edit-msg="firebaseStore.editMessage"
-      @display-date="firebaseStore.displayDate"
+      :display-date="firebaseStore.displayDate"
     />
   </div>
   <div class="users">

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
+import { auth } from "@/services/firebase";
 import { useRouter } from "vue-router";
 import { useFirebaseStore } from "@/stores/firebaseStore";
 import type { User } from "firebase/auth";
@@ -79,6 +80,12 @@ const selectGameRoom = (roomId: string) => {
             </td>
             <td>
               <button @click="selectGameRoom(room.id)">Bli med</button>
+              <button
+                v-show="auth.currentUser?.uid === room.data.createdBy.uid"
+                @click="firebaseStore.deleteGameRoom(room.id, room.data.createdBy.uid)"
+              >
+                Slett
+              </button>
             </td>
           </tr>
         </tbody>

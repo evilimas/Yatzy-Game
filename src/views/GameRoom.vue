@@ -5,10 +5,16 @@ import { ref, onMounted, onUnmounted, computed } from "vue";
 
 import { useFirebaseStore } from "@/stores/firebaseStore";
 import ScoreboardMP from "@/components/ScoreboardMP.vue";
+import DiceMP from "@/components/DiceMP.vue";
 
 const firebaseStore = useFirebaseStore();
 const props = defineProps<{ roomId: string }>();
 const roomId = ref<string>(props.roomId);
+
+type Player = {
+  uid: string;
+  displayName: string;
+};
 // const users = ref<{ uid: string; displayName: string }[]>([]);
 
 // onMounted(async () => {
@@ -27,7 +33,7 @@ onMounted(() => {
 //   if (stop) stop();
 // });
 
-const users = computed(() => firebaseStore.gameData?.players);
+const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
 </script>
 
 <template>
@@ -46,6 +52,17 @@ const users = computed(() => firebaseStore.gameData?.players);
     <p>Loading game data...</p>
   </div>
   <div v-if="firebaseStore.gameData">
+    <DiceMP
+      :activePlayer="firebaseStore.gameData.activePlayer.displayName"
+      :gameStarted="firebaseStore.gameData.gameStarted"
+      :throwCount="firebaseStore.gameData.throwCount"
+      :die="firebaseStore.gameData.dice"
+      :heldDie="firebaseStore.gameData.holdDie"
+      :uid="firebaseStore.gameData.uid"
+      @roll-dice="firebaseStore.rollDice"
+      @reset-hold-die="firebaseStore.resetHoldDie"
+      @hold-die="firebaseStore.holdDie"
+    />
     <ScoreboardMP
       :activePlayer="firebaseStore.gameData.activePlayer.displayName"
       :playersNumber="users.length"

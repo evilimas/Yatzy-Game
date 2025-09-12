@@ -6,6 +6,7 @@ import type { Message } from "@/services/yatzy/types";
 
 interface Props {
   messages: Message[];
+  displayDate: (date: Timestamp) => string;
 }
 
 const props = defineProps<Props>();
@@ -14,7 +15,6 @@ const emit = defineEmits<{
   (e: "post-message", message: string): void;
   (e: "delete-msg", dockId: string, messageUserUid: string): void;
   (e: "edit-msg", dockId: string, messageUserUid: string): void;
-  (e: "display-date", firebaseDate: Timestamp): void;
 }>();
 
 const isChatActive = ref<boolean>(false);
@@ -60,7 +60,7 @@ const sendMessage = () => {
           height="27"
         />
         <div class="message-content">
-          <p class="time">{{ emit("display-date", msg.createdAt) }}</p>
+          <p class="time">{{ props.displayDate(msg.createdAt) }}</p>
           <h4>{{ msg.displayName }} : {{ msg.text }}</h4>
           <div class="chat-btns" v-show="auth.currentUser?.uid === msg.user">
             <button class="delete-btn" @click="emit('delete-msg', msg.id, msg.user)">

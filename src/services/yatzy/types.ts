@@ -110,9 +110,13 @@ interface GameRoomData {
   players: { uid: string; displayName: string }[];
   scoreboards: CompleteScoreboard[];
   dice: number[];
+  holdDie: boolean[];
   activePlayer: { uid: string; displayName: string };
   status: string;
+  gameStarted: boolean;
+  throwCount: number;
   createdAt: Timestamp;
+  uid: string;
 }
 
 export { dieValues };

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import Scoreboard from "@/components/Scoreboard.vue";
+import Scoreboard from "@/components/ScoreboardSP.vue";
 import Dice from "@/components/Dice.vue";
-import Player from "@/components/Player.vue";
+import Player from "@/components/PlayerComponent.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import HighScore from "@/components/HighScore.vue";
 import LiveChat from "@/components/LiveChat.vue";
-import Users from "@/components/Users.vue";
+import Users from "@/components/UsersComponent.vue";
 import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "@/stores/firebaseStore";
 import ConfettiExplosion from "vue-confetti-explosion";

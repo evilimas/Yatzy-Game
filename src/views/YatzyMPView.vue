@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { auth } from "@/services/firebase";
 import { useRouter } from "vue-router";
 import { useFirebaseStore } from "@/stores/firebaseStore";

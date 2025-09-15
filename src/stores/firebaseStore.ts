@@ -456,6 +456,72 @@ export const useFirebaseStore = defineStore("firebase", () => {
     if (!gameData.value) return;
     gameData.value.holdDie = [false, false, false, false, false];
   };
+  const startGame = async (roomId: string) => {
+    if (!gameData.value) return;
+    await updateDoc(doc(db, "games", roomId), {
+      gameStarted: true,
+      status: "playing",
+    });
+  };
+  const restartGame = async (roomId: string) => {
+    if (!gameData.value) return;
+    await updateDoc(doc(db, "games", roomId), {
+      gameStarted: false,
+      status: "waiting",
+      dice: [null, null, null, null, null],
+      holdDie: [false, false, false, false, false],
+      activePlayer: gameData.value.players[0],
+      throwCount: 3,
+      scoreboards: gameData.value.players.map(() => emptyScoreboard()),
+    });
+  };
+
+  // const nextTurn = (combination: string) => {
+  //   if (!dice.value || dice.value.some((die) => die === null)) return;
+  //   placeScore(combination);
+  //   const isLastPlayer = activePlayer.value >= players.value;
+  //   activePlayer.value = isLastPlayer ? 1 : activePlayer.value + 1;
+  //   throwCountRemaining.value = 3;
+  //   holdDie.value = new Array(5).fill(false);
+  //   dice.value = createEmptyDice;
+  //   // createNewDiceAndTurn
+  // };
+
+  // // action
+  // const placeScore = (combination: string) => {
+  //   const combo = combination as YatzyCombination;
+  //   const playerIndex = activePlayer.value - 1;
+  //   if (!gameStarted.value || throwCountRemaining.value == 3) return;
+  //   const scoreboard = scoreboards[playerIndex];
+  //   const scoreFunction = scoreFunctions[combo];
+  //   scoreboard[combo] = scoreFunction(dice.value as Die[]);
+  // };
+
+  // const placeScoreInGameRoom = async (combination: string, roomId: string) => {
+  //   if (!gameData.value) return;
+  //   const combo = combination as keyof CompleteScoreboard;
+  //   const activePlayerUid = gameData.value.activePlayer.uid;
+  //   const playerIndex = gameData.value.players.findIndex((p) => p.uid === activePlayerUid);
+  //   if (playerIndex === -1) return
+  //   const scoreboard = gameData.value.scoreboards[playerIndex];
+  //   if (scoreboard[combo] !== null) return;
+  //   const scoreFunction = scoreboardFunctions[combo];
+  //   scoreboard[combo] = scoreFunction(gameData.value.dice as number[]);
+  //   // move to next player
+  //   const isLastPlayer = playerIndex >= gameData.value.players.length - 1;
+  //   const nextPlayer = isLastPlayer ? gameData.value.players[0] : gameData.value.players[playerIndex + 1];
+  //   // reset for next turn
+  //   gameData.value.activePlayer = nextPlayer;
+  //   gameData.value.throwCount = 3;
+  //   gameData.value.holdDie = [false, false, false, false, false];
+  //   gameData.value.dice = [null, null, null, null, null];
+  //   await updateDoc(doc(db, "games", roomId), {
+  //     scoreboards: gameData.value.scoreboards,
+  //     activePlayer: gameData.value.activePlayer,
+  //     throwCount: gameData.value.throwCount,
+  //     holdDie: gameData.value.holdDie,
+  //     dice: gameData.value.dice,
+  //   });
 
   return {
     db,
@@ -489,5 +555,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     resetHoldDie,
     holdDie,
     deleteGameRoom,
+    startGame,
+    restartGame,
   };
 });

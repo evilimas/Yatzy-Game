@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+
 // import type { DieViewState } from "../services/yatzy/types";
 import { useFirebaseStore } from "@/stores/firebaseStore";
 import { auth } from "@/services/firebase";
@@ -13,6 +14,7 @@ interface Props {
   die: number[];
   heldDie: boolean[];
   uid?: string;
+  roomId?: string;
   //   diceObjects: DieViewState[];
 }
 const emit = defineEmits<{
@@ -35,7 +37,7 @@ const activeUser = () => {
 </script>
 
 <template>
-  <fieldset>
+  <fieldset v-if="props.gameStarted">
     <legend>
       <h4>
         Aktiv Spiller:
@@ -47,8 +49,9 @@ const activeUser = () => {
         <div class="btn-div">
           <button
             class="primary-btn"
-            @click="firebaseStore.rollDice()"
+            @click="firebaseStore.rollDice(roomId)"
             :disabled="throwCount <= 0 || !activeUser()"
+            :style="{ cursor: activeUser() ? 'pointer' : 'not-allowed' }"
           >
             Trill Terninger
           </button>
@@ -59,7 +62,7 @@ const activeUser = () => {
         </div>
       </div>
 
-      <div class="dice">
+      <div class="dice" :disabled="throwCount === 3" v-if="throwCount < 3">
         <!-- <span
           class="dice-span"
           v-for="dieData of [1,2,3,4,5]"
@@ -71,11 +74,13 @@ const activeUser = () => {
             {{ dieData.char }}
           </div> -->
         <!-- </span> -->
-        <span
+        <button
           class="dice-span"
           v-for="(die, index) in props.die"
           :key="index"
-          @click="firebaseStore.holdDie(index)"
+          @click="firebaseStore.holdDie(index, roomId)"
+          :disabled="!activeUser()"
+          :style="{ cursor: activeUser() ? 'pointer' : 'not-allowed' }"
         >
           <div class="die">
             <v-icon
@@ -84,7 +89,7 @@ const activeUser = () => {
               :style="{ color: heldDie[index] ? 'green' : 'white' }"
             />
           </div>
-        </span>
+        </button>
       </div>
     </div>
   </fieldset>
@@ -104,11 +109,13 @@ legend {
   font-weight: 600;
 }
 .dice-span {
-  line-height: 90%;
+  /* line-height: 90%; */
+  background: none;
+  /* margin: 0.5em; */
+  padding: 2px;
 }
-v-icon {
-  color: white;
-  font-size: 4em;
+.die {
+  margin: 0;
 }
 .dice {
   display: flex;

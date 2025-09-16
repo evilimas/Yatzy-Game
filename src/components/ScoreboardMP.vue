@@ -7,14 +7,14 @@ interface Props {
   playersNumber: number;
   users: { uid: string; displayName: string }[];
   completeScoreboards: CompleteScoreboard[];
+  roomId: string;
 }
 
 defineProps<Props>();
 
-// const emit = defineEmits<{
-//   // nextTurn: [string | null];
-//   (e: "placeScore", score: string | null): void;
-// }>();
+const emit = defineEmits<{
+  (e: "placeScore", combination: string | null, room: string): void;
+}>();
 
 // function isAlwaysDisabled(combination: string) {
 //   return combination === "sum" || combination === "bonus" || combination === "total";
@@ -83,9 +83,15 @@ defineProps<Props>();
                   ? 0.3
                   : 1,
             }"
+            @click="
+              emit(
+                'placeScore',
+                completeScoreboards[userIndex]?.[combination] === null ? combination : null,
+                roomId
+              )
+            "
           >
             {{ completeScoreboards[userIndex]?.[combination] }}
-            <!-- @click="emit('placeScore', completeScoreboards[userIndex]?.[combination] === null ? combination : null)" -->
           </td>
         </tr>
       </tbody>

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { emptyScoreboard, scoreboardFunctions } from "@/services/yatzy/scoreboard";
+import { ref, computed, type ComputedRef, watch } from "vue";
+import { emptyScoreboard, scoreboardFunctions, scoreFunctions } from "@/services/yatzy/scoreboard";
 import { auth } from "@/services/firebase";
 import type {
   Message,
@@ -39,6 +39,7 @@ import {
   doc,
 } from "firebase/firestore";
 import router from "@/router";
+import type { YatzyCombination } from "@/yatzyLogic";
 
 export const useFirebaseStore = defineStore("firebase", () => {
   const db = getFirestore();
@@ -291,34 +292,66 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // high score functions
 
-  const addHighScoresToDB = async (score: string, user: User | null) => {
+  const isGameFinished = computed(() => {
+    return gameData.value?.scoreboards.every((board) =>
+      Object.values(board).every((score) => score !== null)
+    );
+  });
+
+  watch(isGameFinished, (finished) => {
+    if (finished) {
+      addAllHighScores();
+    }
+  });
+  const addAllHighScores = () => {
+    if (!gameData.value) return;
+    gameData.value.players.forEach((player, index) => {
+      const playerName = player.displayName || "Unknown Player";
+      const score = gameData.value?.scoreboards[index].total || 0;
+
+      // Add the high score to the database
+      addHighScoreToDB(playerName, score);
+    });
+  };
+  const addHighScoreToDB = async (playerName: string, playerScore: number) => {
     try {
-      const docRef = await addDoc(collection(db, "highScores"), {
-        user: user?.uid,
-        score: score,
-        displayName: user?.displayName,
-        date: serverTimestamp(),
-        profilePicture: user?.photoURL,
+      await addDoc(collection(db, "highScores"), {
+        user: playerName,
+        score: playerScore,
       });
-      console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
   };
 
-  const fetchHighScores = async () => {
-    const querySnapshot = await getDocs(collection(db, "highScores"));
-    querySnapshot.forEach((doc) => {
-      highScores.value.push({
-        id: doc.id,
-        user: doc.data().uid,
-        score: doc.data().score,
-        displayName: doc.data().displayName,
-        date: doc.data().date,
-        profilePicture: doc.data().profilePicture,
-      });
-    });
-  };
+  // const addHighScoresToDB = async () => {
+  //   try {
+  //     const docRef = await addDoc(collection(db, "highScores"), {
+  //       user: gameData.value?.displayName,
+  //       score: score,
+  //       displayName: gameData.value?.displayName,
+  //       date: serverTimestamp(),
+  //       profilePicture: gameData.value?.profilePicture,
+  //     });
+  //     console.log("Document written with ID: ", docRef.id);
+  //   } catch (e) {
+  //     console.error("Error adding document: ", e);
+  //   }
+  // };
+
+  // const fetchHighScores = async () => {
+  //   const querySnapshot = await getDocs(collection(db, "highScores"));
+  //   querySnapshot.forEach((doc) => {
+  //     highScores.value.push({
+  //       id: doc.id,
+  //       user: doc.data().uid,
+  //       score: doc.data().score,
+  //       displayName: doc.data().displayName,
+  //       date: doc.data().date,
+  //       profilePicture: doc.data().profilePicture,
+  //     });
+  //   });
+  // };
 
   // multiplayer functions
 
@@ -404,7 +437,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
   };
 
   const completeScoreboards = computed<CompleteScoreboard[]>(() => {
-    // if (!gameData.value || !gameData.value.scoreboards) return [];
     return (
       gameData.value?.scoreboards.map((sb) => {
         const complete: CompleteScoreboard = { ...sb };
@@ -415,6 +447,36 @@ export const useFirebaseStore = defineStore("firebase", () => {
       }) ?? []
     );
   });
+
+  // place score and move to next turn
+  const placeScoreAndNextTurn = async (combination: string | null, roomId: string) => {
+    if (!gameData.value) return;
+    const combo = combination as YatzyCombination;
+    const playerIndex = gameData.value.players.findIndex(
+      (p) => p.uid === gameData.value?.activePlayer.uid
+    );
+    if (!gameData.value.gameStarted || gameData.value.throwCount == 3) return;
+    const scoreboard = gameData.value.scoreboards[playerIndex];
+    const scoreFunction = scoreFunctions[combo];
+    scoreboard[combo] = scoreFunction(gameData.value.dice as (1 | 2 | 3 | 4 | 5 | 6)[]);
+    // move to next player
+    const isLastPlayer = playerIndex >= gameData.value.players.length - 1;
+    const nextPlayer = isLastPlayer
+      ? gameData.value.players[0]
+      : gameData.value.players[playerIndex + 1];
+    // reset for next turn
+    gameData.value.activePlayer = nextPlayer;
+    gameData.value.throwCount = 3;
+    gameData.value.holdDie = [false, false, false, false, false];
+    gameData.value.dice = [1, 1, 1, 1, 1];
+    await updateDoc(doc(db, "games", roomId), {
+      scoreboards: gameData.value.scoreboards,
+      activePlayer: gameData.value.activePlayer,
+      throwCount: gameData.value.throwCount,
+      holdDie: gameData.value.holdDie,
+      dice: gameData.value.dice,
+    });
+  };
 
   // Dice functions
 
@@ -476,53 +538,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
     });
   };
 
-  // const nextTurn = (combination: string) => {
-  //   if (!dice.value || dice.value.some((die) => die === null)) return;
-  //   placeScore(combination);
-  //   const isLastPlayer = activePlayer.value >= players.value;
-  //   activePlayer.value = isLastPlayer ? 1 : activePlayer.value + 1;
-  //   throwCountRemaining.value = 3;
-  //   holdDie.value = new Array(5).fill(false);
-  //   dice.value = createEmptyDice;
-  //   // createNewDiceAndTurn
-  // };
-
-  // // action
-  // const placeScore = (combination: string) => {
-  //   const combo = combination as YatzyCombination;
-  //   const playerIndex = activePlayer.value - 1;
-  //   if (!gameStarted.value || throwCountRemaining.value == 3) return;
-  //   const scoreboard = scoreboards[playerIndex];
-  //   const scoreFunction = scoreFunctions[combo];
-  //   scoreboard[combo] = scoreFunction(dice.value as Die[]);
-  // };
-
-  // const placeScoreInGameRoom = async (combination: string, roomId: string) => {
-  //   if (!gameData.value) return;
-  //   const combo = combination as keyof CompleteScoreboard;
-  //   const activePlayerUid = gameData.value.activePlayer.uid;
-  //   const playerIndex = gameData.value.players.findIndex((p) => p.uid === activePlayerUid);
-  //   if (playerIndex === -1) return
-  //   const scoreboard = gameData.value.scoreboards[playerIndex];
-  //   if (scoreboard[combo] !== null) return;
-  //   const scoreFunction = scoreboardFunctions[combo];
-  //   scoreboard[combo] = scoreFunction(gameData.value.dice as number[]);
-  //   // move to next player
-  //   const isLastPlayer = playerIndex >= gameData.value.players.length - 1;
-  //   const nextPlayer = isLastPlayer ? gameData.value.players[0] : gameData.value.players[playerIndex + 1];
-  //   // reset for next turn
-  //   gameData.value.activePlayer = nextPlayer;
-  //   gameData.value.throwCount = 3;
-  //   gameData.value.holdDie = [false, false, false, false, false];
-  //   gameData.value.dice = [null, null, null, null, null];
-  //   await updateDoc(doc(db, "games", roomId), {
-  //     scoreboards: gameData.value.scoreboards,
-  //     activePlayer: gameData.value.activePlayer,
-  //     throwCount: gameData.value.throwCount,
-  //     holdDie: gameData.value.holdDie,
-  //     dice: gameData.value.dice,
-  //   });
-
   return {
     db,
     user,
@@ -530,8 +545,8 @@ export const useFirebaseStore = defineStore("firebase", () => {
     onlineUsers,
     // sortedMessagesByDate,
     highScores,
-    fetchHighScores,
-    addHighScoresToDB,
+    // fetchHighScores,
+    // addHighScoresToDB,
     updateUserProfile,
     addMessageToDB,
     postMessage,
@@ -557,5 +572,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
     deleteGameRoom,
     startGame,
     restartGame,
+    placeScoreAndNextTurn,
   };
 });

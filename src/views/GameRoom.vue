@@ -84,7 +84,9 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
           :activePlayer="firebaseStore.gameData.activePlayer.displayName"
           :playersNumber="users.length"
           :users="users"
+          :roomId="roomId"
           :completeScoreboards="firebaseStore.completeScoreboards || []"
+          @placeScore="firebaseStore.placeScoreAndNextTurn"
         />
       </div>
     </div>

@@ -15,15 +15,15 @@ interface Props {
   heldDie: boolean[];
   uid?: string;
   roomId?: string;
-  //   diceObjects: DieViewState[];
+
 }
-const emit = defineEmits<{
-  // (e: "rollDice", roomId?: string): void;
-  // (e: "holdDie", index: number, roomId?: string): void;
-  (e: "resetHoldDie", index: number): void;
-  // throwDice: [];
-  // flip: [number];
-}>();
+// const emit = defineEmits<{
+//   // (e: "rollDice", roomId?: string): void;
+//   // (e: "holdDie", index: number, roomId?: string): void;
+//   // (e: "resetHoldDie", index: number): void;
+//   // throwDice: [];
+//   // flip: [number];
+// }>();
 
 const props = defineProps<Props>();
 

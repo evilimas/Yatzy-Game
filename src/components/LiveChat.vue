@@ -48,7 +48,7 @@ const sendMessage = () => {
     <button @click="isChatActive = !isChatActive">
       {{ chatArrow }}
     </button>
-    <h3 class="green">Live Chat</h3>
+    <h3 class="green">Live Chat <v-icon name="bi-chat-dots" scale="1.5" /></h3>
   </div>
   <div v-if="isChatActive" class="chat-content">
     <div v-if="props.messages" class="messages" ref="messagesContainer">

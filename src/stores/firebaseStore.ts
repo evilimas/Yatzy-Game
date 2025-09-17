@@ -59,7 +59,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       setUserOnline(u);
       fetchInRealTimeAndRenderMessagesFromDB();
       fetchOnlineUsers();
-      fetchHighScores();
+      // fetchHighScores();
       fetchAllGameRooms();
       // listenToGameRoom();
     } else {
@@ -468,7 +468,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     gameData.value.activePlayer = nextPlayer;
     gameData.value.throwCount = 3;
     gameData.value.holdDie = [false, false, false, false, false];
-    gameData.value.dice = [1, 1, 1, 1, 1];
+    gameData.value.dice = [1, 2, 3, 4, 5];
     await updateDoc(doc(db, "games", roomId), {
       scoreboards: gameData.value.scoreboards,
       activePlayer: gameData.value.activePlayer,
@@ -517,6 +517,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const resetHoldDie = () => {
     if (!gameData.value) return;
     gameData.value.holdDie = [false, false, false, false, false];
+    // gameData.value.dice = [1, 2, 3, 4, 5];
   };
   const startGame = async (roomId: string) => {
     if (!gameData.value) return;
@@ -530,7 +531,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     await updateDoc(doc(db, "games", roomId), {
       gameStarted: false,
       status: "waiting",
-      dice: [null, null, null, null, null],
+      dice: [1, 2, 3, 4, 5],
       holdDie: [false, false, false, false, false],
       activePlayer: gameData.value.players[0],
       throwCount: 3,

@@ -21,6 +21,13 @@ import {
   MdDeleteforeverRound,
   MdDelete,
   FaEdit,
+  BiChatDots,
+  GiTrophyCup,
+  LaUsersSolid,
+  PrUsers,
+  BiArrowReturnLeft,
+  LaUserEditSolid,
+  CoAccountLogout,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -37,7 +44,14 @@ addIcons(
   MdDeleteforever,
   MdDeleteforeverRound,
   MdDelete,
-  FaEdit
+  FaEdit,
+  BiChatDots,
+  GiTrophyCup,
+  LaUsersSolid,
+  PrUsers,
+  BiArrowReturnLeft,
+  LaUserEditSolid,
+  CoAccountLogout
 );
 
 const app = createApp(App);

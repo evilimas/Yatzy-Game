@@ -19,8 +19,12 @@ const userFirstName = firebaseStore.user?.displayName
 <template>
   <nav class="navbar">
     <img :src="userProfile" alt="User Avatar" />
-    <button @click="firebaseStore.signOutUser">Logg ut</button>
-    <button @click="router.push('/edit-profile')">Rediger Profil</button>
+    <button @click="firebaseStore.signOutUser">
+      Logg ut <v-icon name="co-account-logout" scale="0.9" />
+    </button>
+    <button @click="router.push('/edit-profile')">
+      Rediger Profil <v-icon name="la-user-edit-solid" scale="0.9" />
+    </button>
   </nav>
   <main>
     <h1 class="green">

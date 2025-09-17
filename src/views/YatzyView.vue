@@ -56,7 +56,9 @@ const handleRestartGame = (): void => {
 
 <template>
   <nav class="navbar">
-    <button @click="router.push('/home')">Tilbake</button>
+    <button @click="router.push('/home')">
+      <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
+    </button>
   </nav>
   <div id="game">
     <h1 class="green">Det beste Yatzy-spillet!</h1>
@@ -175,5 +177,10 @@ h1 {
   position: fixed;
   top: 60px;
   left: 10px;
+}
+h1 {
+  color: #239ba7;
+  font-weight: 600;
+  font-size: 2rem;
 }
 </style>

@@ -51,7 +51,9 @@ const selectGameRoom = (roomId: string) => {
 
 <template>
   <nav class="navbar">
-    <button @click="router.push('/home')">Tilbake</button>
+    <button @click="router.push('/home')">
+      <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
+    </button>
   </nav>
   <div>
     <h1>Yatzy Multiplayer</h1>

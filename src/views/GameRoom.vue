@@ -9,7 +9,7 @@ import DiceMP from "@/components/DiceMP.vue";
 import PlayerMpComponent from "@/components/PlayerMpComponent.vue";
 
 const firebaseStore = useFirebaseStore();
-const props = defineProps<{ roomId: string }>();
+const props = defineProps<{ roomId: string; gameStarted: boolean }>();
 const roomId = ref<string>(props.roomId);
 
 type Player = {
@@ -42,25 +42,37 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
     <div class="info">
       <h1>Game Room</h1>
       <p>Room ID: {{ roomId }}</p>
-      <h2>Players in room:</h2>
+      <h2>{{ users.length }} Players in room :</h2>
       <ul>
         <li v-for="user in users" :key="user.uid">{{ user.displayName }}</li>
       </ul>
-      <p v-if="firebaseStore.gameData">
+      <!-- <p v-if="firebaseStore.gameData">
         Active Player: {{ firebaseStore.gameData.activePlayer.displayName }}
-      </p>
+      </p> -->
       <div v-if="!firebaseStore.gameData?.gameStarted">
         <p>Venter for spillere...</p>
 
         <p>Min 2 spillere for å starte</p>
       </div>
       <p v-else>Game has started!</p>
+      <button
+        v-if="!firebaseStore.gameData?.gameStarted"
+        class="button"
+        :disabled="users.length < 2"
+        :style="{ cursor: users.length >= 2 ? 'pointer' : 'not-allowed' }"
+        @click="firebaseStore.startGame(roomId)"
+      >
+        Start Spill
+      </button>
+      <button v-if="firebaseStore.gameData?.gameStarted" @click="firebaseStore.restartGame(roomId)">
+        Restart Spill
+      </button>
     </div>
     <div>
       <div v-if="!firebaseStore.gameData">
         <p>Loading game data...</p>
       </div>
-      <div v-if="firebaseStore.gameData">
+      <div v-if="firebaseStore.gameData" class="game-area">
         <PlayerMpComponent
           :gameStarted="firebaseStore.gameData.gameStarted"
           :players="users.length"
@@ -100,5 +112,12 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
 .game-room {
   display: flex;
   gap: 2em;
+}
+.game-area {
+  /* flex: 1; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2em;
 }
 </style>

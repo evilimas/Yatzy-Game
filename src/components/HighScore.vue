@@ -26,7 +26,7 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
     <button @click="isHighScoreActive = !isHighScoreActive">
       {{ highScoreArrow }}
     </button>
-    <h3 class="green">Toppresultater</h3>
+    <h3 class="green">Toppresultater <v-icon name="gi-trophy-cup" scale="1.3" /></h3>
   </div>
 
   <div>

@@ -15,7 +15,6 @@ interface Props {
   heldDie: boolean[];
   uid?: string;
   roomId?: string;
-
 }
 // const emit = defineEmits<{
 //   // (e: "rollDice", roomId?: string): void;
@@ -37,13 +36,12 @@ const activeUser = () => {
 </script>
 
 <template>
-  <fieldset v-if="props.gameStarted">
-    <legend>
-      <h4>
-        Aktiv Spiller:
-        <span class="green">{{ activePlayer }}</span>
-      </h4>
-    </legend>
+  <div v-if="props.gameStarted" class="dice-container">
+    <h4>
+      Aktiv Spiller:
+      <span class="green">{{ activePlayer }}</span>
+    </h4>
+
     <div>
       <div class="button-row">
         <div class="btn-div">
@@ -62,14 +60,14 @@ const activeUser = () => {
         </div>
       </div>
 
-      <div class="dice" :disabled="throwCount === 3" v-if="throwCount < 3">
+      <div class="dice" :disabled="throwCount === 3">
         <!-- <span
           class="dice-span"
           v-for="dieData of [1,2,3,4,5]"
           :key="dieData"
           :style="dieData.style"
           @click="emit('flip', dieData.index)"
-        >
+          >
           <div>
             {{ dieData.char }}
           </div> -->
@@ -79,23 +77,33 @@ const activeUser = () => {
           v-for="(die, index) in props.die"
           :key="index"
           @click="firebaseStore.holdDie(index, roomId)"
-          :disabled="!activeUser()"
+          :disabled="!activeUser() || throwCount === 3"
           :style="{ cursor: activeUser() ? 'pointer' : 'not-allowed' }"
         >
           <div class="die">
             <v-icon
               :scale="2"
               :name="`bi-dice-${die}`"
-              :style="{ color: heldDie[index] ? 'green' : 'white' }"
+              :style="{
+                color: heldDie[index] ? '#239ba7' : 'white',
+                // background: heldDie[index] ? '#239BA7' : '',
+                // fill: 'white',
+              }"
             />
           </div>
         </button>
       </div>
     </div>
-  </fieldset>
+  </div>
 </template>
 
 <style scoped>
+.dice-container {
+  padding: 1em;
+  background: #222;
+  border-radius: 8px;
+}
+
 h4 {
   color: rgb(218, 218, 218);
   font-weight: 600;
@@ -104,10 +112,10 @@ h4 {
   color: rgb(214, 214, 214);
   font-weight: 600;
 }
-legend {
+/* legend {
   color: white;
   font-weight: 600;
-}
+} */
 .dice-span {
   /* line-height: 90%; */
   background: none;
@@ -122,13 +130,13 @@ legend {
   user-select: none;
   cursor: pointer;
 }
-fieldset {
+/* fieldset {
   height: 135px;
   width: 16vw;
   display: flex;
   flex-direction: column;
   align-items: baseline;
-}
+} */
 .button-row {
   display: flex;
   flex-direction: column;

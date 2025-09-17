@@ -104,10 +104,10 @@ table,
 tr,
 th,
 td {
-  border: 2px solid lightblue;
+  border: 1.5px solid lightblue;
   border-collapse: collapse;
   padding: 4px;
-  color: rgb(228, 228, 228);
+  color: rgb(245, 243, 243);
   font-weight: 500;
 }
 .combination-cell v-icon {
@@ -117,5 +117,12 @@ td {
 .disabled {
   background-color: #f0f0f0 !important;
   color: #000000;
+}
+table {
+  border: 1px solid #239ba7;
+  border-radius: 12px;
+  background: #292929; /* or your preferred color */
+  /* border-collapse: separate; */
+  overflow: hidden;
 }
 </style>

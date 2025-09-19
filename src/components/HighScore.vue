@@ -26,7 +26,7 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
     <button @click="isHighScoreActive = !isHighScoreActive">
       {{ highScoreArrow }}
     </button>
-    <h3 class="green">Toppresultater <v-icon name="gi-trophy-cup" scale="1.3" /></h3>
+    <h3>Toppresultater <v-icon name="gi-trophy-cup" scale="1.3" /></h3>
   </div>
 
   <div>
@@ -81,6 +81,8 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
   cursor: pointer;
   gap: 0.5em;
   width: 400px;
+  color: white;
+  background: #239ba7;
 }
 h3 {
   font-weight: 600;

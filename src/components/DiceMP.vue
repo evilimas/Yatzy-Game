@@ -52,6 +52,7 @@ const activeUser = () => {
             :style="{ cursor: activeUser() ? 'pointer' : 'not-allowed' }"
           >
             Trill Terninger
+            <v-icon name="la-dice-solid" scale="0.8" animation="wrench" color="white" />
           </button>
         </div>
         <div class="trill-text">
@@ -140,5 +141,8 @@ h4 {
 .button-row {
   display: flex;
   flex-direction: column;
+}
+h4 {
+  margin-bottom: 0.5em;
 }
 </style>

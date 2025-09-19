@@ -107,7 +107,7 @@ td {
   border: 1.5px solid lightblue;
   border-collapse: collapse;
   padding: 4px;
-  color: rgb(245, 243, 243);
+  color: rgb(255, 255, 255);
   font-weight: 500;
 }
 .combination-cell v-icon {

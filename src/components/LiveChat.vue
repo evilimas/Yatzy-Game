@@ -48,7 +48,7 @@ const sendMessage = () => {
     <button @click="isChatActive = !isChatActive">
       {{ chatArrow }}
     </button>
-    <h3 class="green">Live Chat <v-icon name="bi-chat-dots" scale="1.5" /></h3>
+    <h3>Live Chat <v-icon name="bi-chat-dots" scale="1.5" /></h3>
   </div>
   <div v-if="isChatActive" class="chat-content">
     <div v-if="props.messages" class="messages" ref="messagesContainer">
@@ -78,7 +78,7 @@ const sendMessage = () => {
     </div>
     <div class="input-container">
       <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type your message..." />
-      <button @click="sendMessage">Send</button>
+      <button @click="sendMessage" class="send-btn">Send</button>
       <!-- <button @click="firebaseStore.fetchOnceAndRenderMessagesFromDB">Fetch Messages</button> -->
     </div>
   </div>
@@ -107,6 +107,7 @@ const sendMessage = () => {
   display: flex;
   align-items: center;
   min-width: 400px;
+  gap: 0.3em;
 }
 .no-chat {
   text-align: center;
@@ -137,9 +138,13 @@ h4 {
 h3 {
   font-weight: 600;
   font-size: 1.2rem;
+  color: white;
 }
 input {
   width: 100%;
+  padding: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 .delete-btn {
   background: none;
@@ -158,5 +163,18 @@ input {
   position: absolute;
   right: 30px;
   top: 2px;
+}
+.send-btn {
+  /* background-color: #239ba7; */
+  /* color: white; */
+  border: 1px solid #4e4e4e;
+
+  /* padding: 5px 10px; */
+  /* border-radius: 4px; */
+  /* cursor: pointer; */
+}
+.live-chat {
+  scrollbar-color: rgb(66, 66, 66) #239ba7;
+  scrollbar-width: small;
 }
 </style>

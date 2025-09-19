@@ -19,7 +19,7 @@ const chatArrow = computed(() => (isUsersActive.value ? "▲" : "▼"));
       <button @click="isUsersActive = !isUsersActive">
         {{ chatArrow }}
       </button>
-      <h3 class="green">Brukere Online <v-icon name="pr-users" scale="1.4" /></h3>
+      <h3>Brukere Online <v-icon name="pr-users" scale="1.4" /></h3>
     </div>
     <div class="users-container" v-if="isUsersActive">
       <ul>
@@ -34,7 +34,7 @@ const chatArrow = computed(() => (isUsersActive.value ? "▲" : "▼"));
 
 <style>
 .users-online {
-  background: #cecece;
+  background: #239ba7;
   padding: 0.2em;
   border-radius: 8px;
   display: flex;
@@ -49,6 +49,8 @@ const chatArrow = computed(() => (isUsersActive.value ? "▲" : "▼"));
   display: flex;
   gap: 0.3rem;
   align-items: center;
+  color: white;
+  background: #239ba7;
 }
 h3 {
   font-weight: 600;

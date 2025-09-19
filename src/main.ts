@@ -28,6 +28,13 @@ import {
   BiArrowReturnLeft,
   LaUserEditSolid,
   CoAccountLogout,
+  MdRestartalt,
+  MdRestartaltOutlined,
+  RiRestartLine,
+  GiRollingDices,
+  LaDiceSolid,
+  MdNotstartedOutlined,
+  MdDeleteOutlined,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -51,7 +58,14 @@ addIcons(
   PrUsers,
   BiArrowReturnLeft,
   LaUserEditSolid,
-  CoAccountLogout
+  CoAccountLogout,
+  MdRestartalt,
+  MdRestartaltOutlined,
+  RiRestartLine,
+  GiRollingDices,
+  LaDiceSolid,
+  MdNotstartedOutlined,
+  MdDeleteOutlined
 );
 
 const app = createApp(App);

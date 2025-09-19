@@ -55,9 +55,11 @@ const selectGameRoom = (roomId: string) => {
       <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
     </button>
   </nav>
-  <div>
+  <div class="mp-container">
     <h1>Yatzy Multiplayer</h1>
-    <p>Velkommen til Yatzy Multiplayer!</p>
+    <p class="info-text">
+      For å spille Yatzy Multiplayer, vennligst opprett eller bli med i et spillrom.
+    </p>
     <button @click="handleCreateGameRoom">Opprett Spillrom</button>
     <p>Spillromene:</p>
     <div v-if="firebaseStore.allGameRooms.length > 0">
@@ -67,6 +69,7 @@ const selectGameRoom = (roomId: string) => {
             <th>Opprettet av</th>
             <th>Spillere</th>
             <th>Status</th>
+            <th>Handlinger</th>
           </tr>
         </thead>
         <tbody>
@@ -80,13 +83,13 @@ const selectGameRoom = (roomId: string) => {
             <td>
               {{ room.data.status }}
             </td>
-            <td>
+            <td class="actions">
               <button @click="selectGameRoom(room.id)">Bli med</button>
               <button
                 v-show="auth.currentUser?.uid === room.data.createdBy.uid"
                 @click="firebaseStore.deleteGameRoom(room.id, room.data.createdBy.uid)"
               >
-                Slett
+                Slett <v-icon name="md-delete-outlined" scale="0.8" />
               </button>
             </td>
           </tr>
@@ -99,7 +102,7 @@ const selectGameRoom = (roomId: string) => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .navbar {
   position: fixed;
   top: 0;
@@ -109,6 +112,13 @@ const selectGameRoom = (roomId: string) => {
   color: #fff;
   padding: 0.8em;
   border-bottom: 2px solid #444;
+}
+.mp-container {
+  margin-top: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 table,
 tr,
@@ -122,5 +132,21 @@ td {
 }
 h3 {
   color: rgb(238, 238, 238);
+}
+h1 {
+  margin-bottom: 50px;
+  color: #239ba7;
+}
+.info-text {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  width: 70%;
+  text-align: center;
+  flex-wrap: wrap;
+}
+.actions {
+  display: flex;
+  gap: 6px;
+  border: none;
 }
 </style>

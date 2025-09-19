@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-// import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 // import type { User } from "firebase/auth";
 
 import { useFirebaseStore } from "@/stores/firebaseStore";
 import ScoreboardMP from "@/components/ScoreboardMP.vue";
 import DiceMP from "@/components/DiceMP.vue";
 import PlayerMpComponent from "@/components/PlayerMpComponent.vue";
+const router = useRouter();
 
 const firebaseStore = useFirebaseStore();
-const props = defineProps<{ roomId: string; gameStarted: boolean }>();
+const props = defineProps<{ roomId: string }>();
 const roomId = ref<string>(props.roomId);
 
 type Player = {
@@ -38,6 +39,11 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
 </script>
 
 <template>
+  <nav class="navbar">
+    <button @click="router.push('/yatzy-mp')">
+      <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
+    </button>
+  </nav>
   <div class="game-room">
     <div class="info">
       <h1>Game Room</h1>
@@ -62,10 +68,10 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
         :style="{ cursor: users.length >= 2 ? 'pointer' : 'not-allowed' }"
         @click="firebaseStore.startGame(roomId)"
       >
-        Start Spill
+        Start Spill <v-icon name="md-notstarted-outlined" scale="0.8" animation="flash" />
       </button>
       <button v-if="firebaseStore.gameData?.gameStarted" @click="firebaseStore.restartGame(roomId)">
-        Restart Spill
+        Restart Spill <v-icon name="ri-restart-line" scale="0.8" animation="spin" color="white" />
       </button>
     </div>
     <div>
@@ -105,7 +111,7 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
   </div>
 </template>
 
-<style>
+<style scoped>
 .info {
   margin-bottom: 1em;
 }
@@ -119,5 +125,15 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
   flex-direction: column;
   align-items: center;
   gap: 1.2em;
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #222;
+  color: #fff;
+  padding: 0.8em;
+  border-bottom: 2px solid #444;
 }
 </style>

@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import Scoreboard from "@/components/ScoreboardSP.vue";
-import Dice from "@/components/Dice.vue";
+import Dice from "@/components/DiceSP.vue";
 import Player from "@/components/PlayerComponent.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import HighScore from "@/components/HighScore.vue";
@@ -123,7 +123,7 @@ const handleRestartGame = (): void => {
   </div>
 </template>
 
-<style>
+<style scoped>
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;
@@ -148,7 +148,7 @@ h1 {
   width: auto;
   max-height: 400px;
   overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #239ba7;
   border-radius: 10px;
   padding: 3px;
 }
@@ -159,7 +159,9 @@ h1 {
   width: auto;
   max-height: 400px;
   overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.8);
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  background-color: #239ba7;
+  /* color: white; */
   border-radius: 10px;
   padding: 3px;
 }

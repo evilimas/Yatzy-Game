@@ -60,7 +60,9 @@ const selectGameRoom = (roomId: string) => {
     <p class="info-text">
       For å spille Yatzy Multiplayer, vennligst opprett eller bli med i et spillrom.
     </p>
-    <button @click="handleCreateGameRoom">Opprett Spillrom</button>
+    <button @click="handleCreateGameRoom">
+      Opprett Spillrom <v-icon name="pr-plus-circle" scale="0.9" color="white" animation="pulse" />
+    </button>
     <p>Spillromene:</p>
     <div v-if="firebaseStore.allGameRooms.length > 0">
       <table>
@@ -84,12 +86,14 @@ const selectGameRoom = (roomId: string) => {
               {{ room.data.status }}
             </td>
             <td class="actions">
-              <button @click="selectGameRoom(room.id)">Bli med</button>
+              <button @click="selectGameRoom(room.id)">
+                Bli med <v-icon name="co-room" scale="0.8" color="white" />
+              </button>
               <button
                 v-show="auth.currentUser?.uid === room.data.createdBy.uid"
                 @click="firebaseStore.deleteGameRoom(room.id, room.data.createdBy.uid)"
               >
-                Slett <v-icon name="md-delete-outlined" scale="0.8" />
+                Slett <v-icon name="md-delete-outlined" scale="0.8" color="white" />
               </button>
             </td>
           </tr>
@@ -119,6 +123,9 @@ const selectGameRoom = (roomId: string) => {
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  background: #222;
+  padding: 1em;
+  border-radius: 8px;
 }
 table,
 tr,

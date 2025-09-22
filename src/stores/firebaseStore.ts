@@ -59,7 +59,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       setUserOnline(u);
       fetchInRealTimeAndRenderMessagesFromDB();
       fetchOnlineUsers();
-      // fetchHighScores();
+      fetchInRealTimeAndRenderScoresFromDB();
       fetchAllGameRooms();
       // listenToGameRoom();
     } else {
@@ -290,6 +290,23 @@ export const useFirebaseStore = defineStore("firebase", () => {
     return `${day} ${month} ${year} - ${paddedHours}:${paddedMinutes}`;
   };
 
+  const winner = (): string => {
+    const scores = gameData.value?.scoreboards ?? [];
+
+    const maxScore = Math.max(...scores.map((score) => score.total ?? 0));
+    const winners = scores
+      .map((score, index) => ({ player: index + 1, score: score.total ?? 0 }))
+      .filter((score) => score.score === maxScore && maxScore > 0);
+
+    if (winners.length === 0) {
+      return "No winner";
+    } else if (winners.length === 1) {
+      return `Player ${winners[0].player} wins!`;
+    } else {
+      return `It's a tie between players: ${winners.map((w) => w.player).join(", ")}`;
+    }
+  };
+
   // high score functions
 
   const isGameFinished = computed(() => {
@@ -307,17 +324,19 @@ export const useFirebaseStore = defineStore("firebase", () => {
     if (!gameData.value) return;
     gameData.value.players.forEach((player, index) => {
       const playerName = player.displayName || "Unknown Player";
-      const score = gameData.value?.scoreboards[index].total || 0;
-
-      // Add the high score to the database
-      addHighScoreToDB(playerName, score);
+      const score = gameData.value?.scoreboards[index] as CompleteScoreboard;
+      const totalSum = scoreboardFunctions.total(score);
+      const date = new Date();
+      const playerDate = date.toISOString();
+      addHighScoreToDB(playerName, totalSum, playerDate);
     });
   };
-  const addHighScoreToDB = async (playerName: string, playerScore: number) => {
+  const addHighScoreToDB = async (playerName: string, playerScore: number, playerDate: string) => {
     try {
       await addDoc(collection(db, "highScores"), {
         user: playerName,
         score: playerScore,
+        date: playerDate,
       });
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -339,19 +358,17 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   }
   // };
 
-  // const fetchHighScores = async () => {
-  //   const querySnapshot = await getDocs(collection(db, "highScores"));
-  //   querySnapshot.forEach((doc) => {
-  //     highScores.value.push({
-  //       id: doc.id,
-  //       user: doc.data().uid,
-  //       score: doc.data().score,
-  //       displayName: doc.data().displayName,
-  //       date: doc.data().date,
-  //       profilePicture: doc.data().profilePicture,
-  //     });
-  //   });
-  // };
+  const fetchInRealTimeAndRenderScoresFromDB = async () => {
+    const querySnapshot = await getDocs(collection(db, "highScores"));
+    querySnapshot.forEach((doc) => {
+      highScores.value.push({
+        id: doc.id,
+        user: doc.data().user,
+        score: doc.data().score,
+        date: doc.data().date,
+      });
+    });
+  };
 
   // multiplayer functions
 
@@ -400,14 +417,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  // const listenToGameRoom = (gameId: string, callback: (gameData: GameRoomData) => void) => {
-  //   return onSnapshot(doc(db, "games", gameId), (docSnap) => {
-  //     const data = docSnap.data();
-  //     if (data) {
-  //       callback(data as GameRoomData);
-  //     }
-  //   });
-  // };
   const listenToGameRoom = (gameId: string) => {
     const gameRef = doc(db, "games", gameId);
     return onSnapshot(gameRef, (snap) => {
@@ -483,15 +492,15 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const rollDie = () => Math.floor(Math.random() * 6) + 1;
 
   const rollDice = async (roomId?: string) => {
-    const g = gameData.value;
-    if (!g || g.throwCount <= 0) return;
+    if (!gameData.value || gameData.value.throwCount <= 0) return;
 
-    const newDice = g.dice.map((die, i) => (g.holdDie[i] ? die : rollDie()));
-    const newThrowCount = g.throwCount - 1;
+    const newDice = gameData.value.dice.map((die, i) =>
+      gameData.value?.holdDie[i] ? die : rollDie()
+    );
+    const newThrowCount = gameData.value.throwCount - 1;
 
-    // update local state
-    g.dice = newDice;
-    g.throwCount = newThrowCount;
+    gameData.value.dice = newDice;
+    gameData.value.throwCount = newThrowCount;
 
     if (roomId) {
       await updateDoc(doc(db, "games", roomId), {
@@ -514,11 +523,11 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const resetHoldDie = () => {
-    if (!gameData.value) return;
-    gameData.value.holdDie = [false, false, false, false, false];
-    // gameData.value.dice = [1, 2, 3, 4, 5];
-  };
+  // const resetHoldDie = () => {
+  //   if (!gameData.value) return;
+  //   gameData.value.holdDie = [false, false, false, false, false];
+
+  // };
   const startGame = async (roomId: string) => {
     if (!gameData.value) return;
     await updateDoc(doc(db, "games", roomId), {
@@ -567,12 +576,14 @@ export const useFirebaseStore = defineStore("firebase", () => {
     allGameRooms,
     completeScoreboards,
     gameData,
+    isGameFinished,
     rollDice,
-    resetHoldDie,
+    // resetHoldDie,
     holdDie,
     deleteGameRoom,
     startGame,
     restartGame,
     placeScoreAndNextTurn,
+    winner,
   };
 });

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 // import type { User } from "firebase/auth";
 
@@ -7,16 +7,38 @@ import { useFirebaseStore } from "@/stores/firebaseStore";
 import ScoreboardMP from "@/components/ScoreboardMP.vue";
 import DiceMP from "@/components/DiceMP.vue";
 import PlayerMpComponent from "@/components/PlayerMpComponent.vue";
-const router = useRouter();
+import WinnerModal from "@/components/WinnerModal.vue";
+import ConfettiExplosion from "vue-confetti-explosion";
 
+const router = useRouter();
 const firebaseStore = useFirebaseStore();
+
 const props = defineProps<{ roomId: string }>();
 const roomId = ref<string>(props.roomId);
+const showWinnerModal = ref<boolean>(false);
 
 type Player = {
   uid: string;
   displayName: string;
 };
+
+watch(
+  () => firebaseStore.isGameFinished,
+  (isFinished) => {
+    if (isFinished) {
+      showWinnerModal.value = true;
+    }
+  }
+);
+
+const handleCloseModal = (): void => {
+  showWinnerModal.value = false;
+};
+const handleNewGame = (): void => {
+  firebaseStore.restartGame(roomId.value);
+  showWinnerModal.value = false;
+};
+
 // const users = ref<{ uid: string; displayName: string }[]>([]);
 
 // onMounted(async () => {
@@ -68,7 +90,8 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
         :style="{ cursor: users.length >= 2 ? 'pointer' : 'not-allowed' }"
         @click="firebaseStore.startGame(roomId)"
       >
-        Start Spill <v-icon name="md-notstarted-outlined" scale="0.8" animation="flash" />
+        Start Spill
+        <v-icon name="md-notstarted-outlined" scale="0.8" animation="flash" color="white" />
       </button>
       <button v-if="firebaseStore.gameData?.gameStarted" @click="firebaseStore.restartGame(roomId)">
         Restart Spill <v-icon name="ri-restart-line" scale="0.8" animation="spin" color="white" />
@@ -79,6 +102,12 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
         <p>Loading game data...</p>
       </div>
       <div v-if="firebaseStore.gameData" class="game-area">
+        <ConfettiExplosion
+          v-if="showWinnerModal"
+          :duration="8000"
+          :particleCount="800"
+          :colors="['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']"
+        />
         <PlayerMpComponent
           :gameStarted="firebaseStore.gameData.gameStarted"
           :players="users.length"
@@ -96,7 +125,6 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
           :roomId="roomId"
           @roll-dice="firebaseStore.rollDice"
           @hold-die="firebaseStore.holdDie"
-          @reset-hold-die="firebaseStore.resetHoldDie"
         />
         <ScoreboardMP
           :activePlayer="firebaseStore.gameData.activePlayer.displayName"
@@ -106,6 +134,12 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
           :completeScoreboards="firebaseStore.completeScoreboards || []"
           @placeScore="firebaseStore.placeScoreAndNextTurn"
         />
+        <WinnerModal
+          :is-visible="showWinnerModal"
+          :winner-text="firebaseStore.winner()"
+          @close="handleCloseModal"
+          @new-game="handleNewGame"
+        />
       </div>
     </div>
   </div>
@@ -113,7 +147,12 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
 
 <style scoped>
 .info {
-  margin-bottom: 1em;
+  /* margin-bottom: 1em; */
+  background: #222;
+  padding: 1em;
+  border-radius: 8px;
+  height: fit-content;
+  align-self: center;
 }
 .game-room {
   display: flex;
@@ -135,5 +174,11 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
   color: #fff;
   padding: 0.8em;
   border-bottom: 2px solid #444;
+}
+@media (max-width: 768px) {
+  .game-room {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
 }
 </style>

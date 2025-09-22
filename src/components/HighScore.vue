@@ -39,7 +39,7 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
       </button>
       <ol v-if="onlineScores.length > 0">
         <li v-for="(score, index) in onlineScores" :key="index">
-          {{ score.displayName }} : {{ score.score }} Poeng -
+          {{ score.user }} : {{ score.score }} Poeng -
           {{ score.date }}
         </li>
       </ol>

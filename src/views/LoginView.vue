@@ -10,7 +10,7 @@ const loginPage = ref<boolean>(true);
 </script>
 
 <template>
-  <div>
+  <div class="login-view">
     <section id="logged-out-view" v-if="loginPage">
       <h2>For å starte spillet, vennligst logg inn.</h2>
       <div class="container google">

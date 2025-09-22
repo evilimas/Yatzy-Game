@@ -95,4 +95,11 @@ img {
 .mp-container {
   align-items: center;
 }
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+}
 </style>

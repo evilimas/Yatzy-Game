@@ -94,8 +94,6 @@ interface Message {
 interface HighScore {
   id: string;
   user: string;
-  displayName: string;
-  profilePicture: string | null;
   score: string;
   date: Timestamp;
 }

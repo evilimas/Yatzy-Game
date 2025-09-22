@@ -35,6 +35,10 @@ import {
   LaDiceSolid,
   MdNotstartedOutlined,
   MdDeleteOutlined,
+  CoRoom,
+  OiPlus,
+  PrPlus,
+  PrPlusCircle,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -65,7 +69,11 @@ addIcons(
   GiRollingDices,
   LaDiceSolid,
   MdNotstartedOutlined,
-  MdDeleteOutlined
+  MdDeleteOutlined,
+  CoRoom,
+  OiPlus,
+  PrPlus,
+  PrPlusCircle
 );
 
 const app = createApp(App);

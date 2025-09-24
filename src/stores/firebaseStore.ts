@@ -61,6 +61,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       fetchOnlineUsers();
       fetchInRealTimeAndRenderScoresFromDB();
       fetchAllGameRooms();
+      fetchAllHighScores();
       // listenToGameRoom();
     } else {
       user.value = null;
@@ -190,9 +191,9 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
     const q = query(postsRef, where("createdAt", "!=", null), orderBy("createdAt", "asc"));
 
-    onSnapshot(q, (querySnapshot) => {
+    onSnapshot(q, (snapshot) => {
       messages.value = [];
-      querySnapshot.forEach((doc) => {
+      snapshot.forEach((doc) => {
         messages.value.push({
           id: doc.id,
           user: doc.data().uid,
@@ -292,18 +293,25 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   const winner = (): string => {
     const scores = gameData.value?.scoreboards ?? [];
+    const totals = scores.map((score) => scoreboardFunctions.total(score));
+    const maxScore = Math.max(...totals);
+    const winners = totals
+      .map((score, index) => ({ player: index + 1, score }))
+      .filter((entry) => entry.score === maxScore && maxScore > 0);
 
-    const maxScore = Math.max(...scores.map((score) => score.total ?? 0));
-    const winners = scores
-      .map((score, index) => ({ player: index + 1, score: score.total ?? 0 }))
-      .filter((score) => score.score === maxScore && maxScore > 0);
+    const winnerDisplayName = winners
+      .map(
+        (winner) =>
+          gameData.value?.players[winner.player - 1]?.displayName || `Player ${winner.player}`
+      )
+      .join(", ");
 
     if (winners.length === 0) {
       return "No winner";
     } else if (winners.length === 1) {
-      return `Player ${winners[0].player} wins!`;
+      return `${winnerDisplayName} wins!`;
     } else {
-      return `It's a tie between players: ${winners.map((w) => w.player).join(", ")}`;
+      return `It's a tie between: ${winnerDisplayName}`;
     }
   };
 
@@ -343,20 +351,20 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  // const addHighScoresToDB = async () => {
-  //   try {
-  //     const docRef = await addDoc(collection(db, "highScores"), {
-  //       user: gameData.value?.displayName,
-  //       score: score,
-  //       displayName: gameData.value?.displayName,
-  //       date: serverTimestamp(),
-  //       profilePicture: gameData.value?.profilePicture,
-  //     });
-  //     console.log("Document written with ID: ", docRef.id);
-  //   } catch (e) {
-  //     console.error("Error adding document: ", e);
-  //   }
-  // };
+  const fetchAllHighScores = async () => {
+    const q = query(collection(db, "highScores"), orderBy("score", "desc"));
+    onSnapshot(q, (snapshot) => {
+      highScores.value = [];
+      snapshot.forEach((doc) => {
+        highScores.value.push({
+          id: doc.id,
+          user: doc.data().user,
+          score: doc.data().score,
+          date: doc.data().date,
+        });
+      });
+    });
+  };
 
   const fetchInRealTimeAndRenderScoresFromDB = async () => {
     const querySnapshot = await getDocs(collection(db, "highScores"));
@@ -457,7 +465,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     );
   });
 
-  // place score and move to next turn
+  // place score and move to next turn function
   const placeScoreAndNextTurn = async (combination: string | null, roomId: string) => {
     if (!gameData.value) return;
     const combo = combination as YatzyCombination;

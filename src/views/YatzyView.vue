@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import Scoreboard from "@/components/ScoreboardSP.vue";
 import Dice from "@/components/DiceSP.vue";
 import Player from "@/components/PlayerComponent.vue";
@@ -8,11 +8,11 @@ import WinnerModal from "@/components/WinnerModal.vue";
 import HighScore from "@/components/HighScore.vue";
 import LiveChat from "@/components/LiveChat.vue";
 import Users from "@/components/UsersComponent.vue";
+import ConfettiExplosion from "vue-confetti-explosion";
 import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "@/stores/firebaseStore";
-import ConfettiExplosion from "vue-confetti-explosion";
 
-const router = useRouter();
+// const router = useRouter();
 const showWinnerModal = ref(false);
 const store = yatzyStore();
 const firebaseStore = useFirebaseStore();
@@ -55,11 +55,6 @@ const handleRestartGame = (): void => {
 </script>
 
 <template>
-  <nav class="navbar">
-    <button @click="router.push('/home')">
-      <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
-    </button>
-  </nav>
   <div id="game">
     <h1 class="green">Det beste Yatzy-spillet!</h1>
     <ConfettiExplosion
@@ -165,7 +160,7 @@ h1 {
   border-radius: 10px;
   padding: 3px;
 }
-.navbar {
+/* .navbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -174,7 +169,7 @@ h1 {
   color: #fff;
   padding: 0.8em;
   border-bottom: 2px solid #444;
-}
+} */
 .users {
   position: fixed;
   top: 60px;

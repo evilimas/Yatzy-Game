@@ -50,11 +50,6 @@ const selectGameRoom = (roomId: string) => {
 </script>
 
 <template>
-  <nav class="navbar">
-    <button @click="router.push('/home')">
-      <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
-    </button>
-  </nav>
   <div class="mp-container">
     <h1>Yatzy Multiplayer</h1>
     <p class="info-text">
@@ -107,7 +102,7 @@ const selectGameRoom = (roomId: string) => {
 </template>
 
 <style scoped>
-.navbar {
+/* .navbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -116,7 +111,7 @@ const selectGameRoom = (roomId: string) => {
   color: #fff;
   padding: 0.8em;
   border-bottom: 2px solid #444;
-}
+} */
 .mp-container {
   margin-top: 70px;
   display: flex;
@@ -126,6 +121,7 @@ const selectGameRoom = (roomId: string) => {
   background: #222;
   padding: 1em;
   border-radius: 8px;
+  width: fit-content;
 }
 table,
 tr,

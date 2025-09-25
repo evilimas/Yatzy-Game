@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed, watch } from "vue";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 // import type { User } from "firebase/auth";
 
 import { useFirebaseStore } from "@/stores/firebaseStore";
@@ -10,7 +10,7 @@ import PlayerMpComponent from "@/components/PlayerMpComponent.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import ConfettiExplosion from "vue-confetti-explosion";
 
-const router = useRouter();
+// const router = useRouter();
 const firebaseStore = useFirebaseStore();
 
 const props = defineProps<{ roomId: string }>();
@@ -61,11 +61,11 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
 </script>
 
 <template>
-  <nav class="navbar">
+  <!-- <nav class="navbar">
     <button @click="router.push('/yatzy-mp')">
       <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
     </button>
-  </nav>
+  </nav> -->
   <div class="game-room">
     <div class="info">
       <h1>Game Room</h1>

@@ -1,14 +1,32 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import NavComponent from "./components/NavComponent.vue";
+import { useFirebaseStore } from "./stores/firebaseStore";
+// import { computed } from "vue";
+
+const firebaseStore = useFirebaseStore();
+</script>
 
 <template>
   <div>
-    <header></header>
+    <NavComponent :userPhoto="firebaseStore.user?.photoURL" @signOut="firebaseStore.signOutUser" />
     <RouterView />
   </div>
 </template>
 
 <style scoped>
-header {
+/* nav {
+  display: flex;
+  gap: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #222;
+  color: #fff;
+  padding: 0.8em;
+  border-bottom: 2px solid #444;
+} */
+/* header {
   line-height: 1.5;
   max-height: 100vh;
 }
@@ -41,9 +59,9 @@ nav a {
 
 nav a:first-of-type {
   border: 0;
-}
+} */
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
@@ -68,5 +86,5 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
-}
+} */
 </style>

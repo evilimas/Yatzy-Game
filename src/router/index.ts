@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import GameRoom from "../views/GameRoom.vue";
+import LoginView from "../views/LoginView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +9,7 @@ const router = createRouter({
     {
       path: "/",
       name: "login",
-      component: () => import("../views/LoginView.vue"),
+      component: LoginView,
       props: true,
     },
     {
@@ -36,7 +38,7 @@ const router = createRouter({
     {
       path: "/yatzy-mp/:roomId",
       name: "yatzy-mp-room",
-      component: () => import("../views/GameRoom.vue"),
+      component: GameRoom,
       props: true,
     },
   ],

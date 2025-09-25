@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
+
 import { useFirebaseStore } from "@/stores/firebaseStore";
 const firebaseStore = useFirebaseStore();
 
@@ -7,6 +8,14 @@ const email = ref<string>("");
 const password = ref<string>("");
 const name = ref<string>("");
 const loginPage = ref<boolean>(true);
+const error = ref<string | null>(null);
+
+watch(
+  () => firebaseStore.errorMsg,
+  (newError) => {
+    error.value = newError;
+  }
+);
 </script>
 
 <template>
@@ -43,6 +52,7 @@ const loginPage = ref<boolean>(true);
           >
             Logg inn
           </button>
+          <p class="error-message" v-if="error">{{ error }}</p>
         </form>
         <div>
           <h3>Ikke har konto? <a @click="loginPage = false">Registrer deg her</a></h3>
@@ -137,5 +147,9 @@ form {
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+.error-message {
+  color: red;
+  font-weight: 600;
 }
 </style>

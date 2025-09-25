@@ -49,6 +49,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const messages = ref<Message[]>([]);
   const highScores = ref<HighScore[]>([]);
   const onlineUsers = ref<User[]>([]);
+  const errorMsg = ref<string | null>(null);
 
   const allGameRooms = ref<{ id: string; data: GameRoomData }[]>([]);
   const gameData = ref<GameRoomData | null>(null);
@@ -77,6 +78,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       router.push("/home");
     } catch {
       alert("Error signing in with Google");
+      errorMsg.value = "Error signing in with Google";
     }
   };
 
@@ -85,7 +87,8 @@ export const useFirebaseStore = defineStore("firebase", () => {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/home");
     } catch (error) {
-      alert((error as Error).message);
+      // alert((error as Error).message);
+      errorMsg.value = (error as Error).message || "Error signing in with email and password";
     }
   };
 
@@ -328,6 +331,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       addAllHighScores();
     }
   });
+
   const addAllHighScores = () => {
     if (!gameData.value) return;
     gameData.value.players.forEach((player, index) => {
@@ -561,6 +565,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     user,
     messages,
     onlineUsers,
+    errorMsg,
     // sortedMessagesByDate,
     highScores,
     // fetchHighScores,

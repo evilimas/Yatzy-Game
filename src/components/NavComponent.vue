@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
+import defaultAvatar from "@/images/default-avatar.jpeg";
 const router = useRouter();
 const route = useRoute();
 
@@ -12,11 +13,11 @@ const emit = defineEmits<{
   (e: "signOut"): void;
 }>();
 
-const userProfile = props.userPhoto ? props.userPhoto : "./src/images/default-avatar.jpeg";
+const userProfilePicture = props.userPhoto || defaultAvatar;
 </script>
 <template>
   <nav class="navbar" v-if="route.path == '/home'">
-    <img :src="userProfile" alt="User Avatar" />
+    <img :src="userProfilePicture" alt="User Avatar" />
     <button @click="emit('signOut')">
       Logg ut <v-icon name="co-account-logout" scale="0.9" />
     </button>
@@ -24,11 +25,17 @@ const userProfile = props.userPhoto ? props.userPhoto : "./src/images/default-av
       Rediger Profil <v-icon name="la-user-edit-solid" scale="0.9" />
     </button>
   </nav>
+  <!-- <nav class="navbar" v-else-if="route.path === '/yatzy-mp/:roomId'">
+    <button @click="router.push('/yatzy-mp')">Tilbake til spillrom</button>
+  </nav> -->
   <nav
     class="navbar"
     v-else-if="route.path !== '/login' && route.path !== '/register' && route.path !== '/'"
   >
-    <button @click="router.push('/home')">
+    <button v-if="route.path.startsWith('/yatzy-mp/')" @click="router.push('/yatzy-mp')">
+      <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
+    </button>
+    <button v-else-if="route.path !== '/yatzy-mp/:roomId'" @click="router.push('/home')">
       <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
     </button>
   </nav>

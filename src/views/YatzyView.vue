@@ -102,6 +102,7 @@ const handleRestartGame = (): void => {
       :isGameFinished="store.isGameFinished"
       :scores="store.scores"
       :onlineScores="firebaseStore.highScores"
+      :display-date="firebaseStore.displayDate"
     />
   </div>
   <div class="live-chat">

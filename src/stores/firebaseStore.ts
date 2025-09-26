@@ -318,7 +318,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  // high score functions
+  // high score (multiplayer) functions
 
   const isGameFinished = computed(() => {
     return gameData.value?.scoreboards.every((board) =>
@@ -332,23 +332,22 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   });
 
-  const addAllHighScores = () => {
+  const addAllHighScores = async () => {
     if (!gameData.value) return;
-    gameData.value.players.forEach((player, index) => {
+    gameData.value.players.forEach(async (player, index) => {
       const playerName = player.displayName || "Unknown Player";
       const score = gameData.value?.scoreboards[index] as CompleteScoreboard;
       const totalSum = scoreboardFunctions.total(score);
-      const date = new Date();
-      const playerDate = date.toISOString();
-      addHighScoreToDB(playerName, totalSum, playerDate);
+      // const createdAt = serverTimestamp();
+      await addHighScoreToDB(playerName, totalSum);
     });
   };
-  const addHighScoreToDB = async (playerName: string, playerScore: number, playerDate: string) => {
+  const addHighScoreToDB = async (playerName: string, playerScore: number) => {
     try {
       await addDoc(collection(db, "highScores"), {
         user: playerName,
         score: playerScore,
-        date: playerDate,
+        createdAt: serverTimestamp(),
       });
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -364,7 +363,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
           id: doc.id,
           user: doc.data().user,
           score: doc.data().score,
-          date: doc.data().date,
+          createdAt: doc.data().createdAt,
         });
       });
     });
@@ -377,7 +376,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
         id: doc.id,
         user: doc.data().user,
         score: doc.data().score,
-        date: doc.data().date,
+        createdAt: doc.data().createdAt,
       });
     });
   };

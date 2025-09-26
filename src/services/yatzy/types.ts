@@ -95,7 +95,7 @@ interface HighScore {
   id: string;
   user: string;
   score: string;
-  date: Timestamp;
+  createdAt: Timestamp;
 }
 interface LocalHighScore {
   name: string;

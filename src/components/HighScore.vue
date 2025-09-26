@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import type { HighScore, LocalHighScore } from "@/services/yatzy/types";
+import { Timestamp } from "firebase/firestore";
 
 interface Props {
   isGameFinished: boolean;
   scores: LocalHighScore[];
   onlineScores: HighScore[];
+  displayDate: (date: Timestamp) => string;
 }
-defineProps<Props>();
+const props = defineProps<Props>();
 
-const isHighScoreActive = ref(false);
-const isLocalHighScoreActive = ref(true);
-const isOnlineHighScoreActive = ref(false);
+const isHighScoreActive = ref<boolean>(false);
+const isLocalHighScoreActive = ref<boolean>(true);
+const isOnlineHighScoreActive = ref<boolean>(false);
 
 const highScoreArrow = computed(() => (isHighScoreActive.value ? "▼" : "▲"));
 
@@ -40,7 +42,7 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
       <ol v-if="onlineScores.length > 0">
         <li v-for="(score, index) in onlineScores" :key="index">
           {{ score.user }} : {{ score.score }} Poeng -
-          {{ score.date }}
+          {{ props.displayDate(score.createdAt) }}
         </li>
       </ol>
       <div v-else>

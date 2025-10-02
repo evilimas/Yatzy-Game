@@ -57,13 +57,13 @@ export const useFirebaseStore = defineStore("firebase", () => {
   onAuthStateChanged(auth, (u) => {
     if (u) {
       user.value = u;
-      setUserOnline(u);
       fetchInRealTimeAndRenderMessagesFromDB();
       fetchOnlineUsers();
       fetchInRealTimeAndRenderScoresFromDB();
       fetchAllGameRooms();
       fetchAllHighScores();
       // listenToGameRoom();
+      setUserOnline(u);
     } else {
       user.value = null;
       router.push("/");
@@ -76,9 +76,9 @@ export const useFirebaseStore = defineStore("firebase", () => {
     try {
       await signInWithPopup(auth, provider);
       router.push("/home");
-    } catch {
+    } catch (error) {
       alert("Error signing in with Google");
-      errorMsg.value = "Error signing in with Google";
+      errorMsg.value = (error as Error).message || "Error signing in with Google";
     }
   };
 
@@ -100,6 +100,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       if (userCredential.user) {
         await updateProfile(userCredential.user, { displayName });
       }
+      await signInWithEmailAndPassword(auth, email, password);
       router.push("/home");
     } catch (error) {
       alert((error as Error).message);
@@ -121,21 +122,29 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   update user functions
 
   const updateUserProfile = async (profileData: { displayName: string; photoURL: string }) => {
-    if (user.value) {
-      await updateProfile(user.value, profileData);
+    try {
+      if (user.value) {
+        await updateProfile(user.value, profileData);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
   //   fetch user online status functions
 
   const setUserOnline = async (user: User) => {
-    await setDoc(doc(db, "usersStatus", user.uid), {
-      uid: user.uid,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      lastOnline: serverTimestamp(),
-      online: true,
-    });
+    try {
+      await setDoc(doc(db, "usersStatus", user.uid), {
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        lastOnline: serverTimestamp(),
+        online: true,
+      });
+    } catch (error) {
+      console.error("Error setting user online:", error);
+    }
   };
 
   const fetchOnlineUsers = async () => {
@@ -169,7 +178,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       });
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error("Error adding message document: ", e);
     }
   };
 
@@ -338,7 +347,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
       const playerName = player.displayName || "Unknown Player";
       const score = gameData.value?.scoreboards[index] as CompleteScoreboard;
       const totalSum = scoreboardFunctions.total(score);
-      // const createdAt = serverTimestamp();
       await addHighScoreToDB(playerName, totalSum);
     });
   };
@@ -386,7 +394,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   const createGameRoom = async (user: User) => {
     const gameRef = await addDoc(collection(db, "games"), {
       createdBy: { uid: user.uid, displayName: user.displayName },
-      players: [{ uid: user.uid, displayName: user.displayName }],
+      players: [{ uid: user.uid, displayName: user.displayName, willRestart: false }],
       scoreboards: [emptyScoreboard()],
       dice: [1, 2, 3, 4, 5],
       holdDie: [false, false, false, false, false],
@@ -410,21 +418,26 @@ export const useFirebaseStore = defineStore("firebase", () => {
   // };
 
   const joinGameRoom = async (gameId: string, user: User) => {
+    const player = gameData.value!.players.find((p) => p.uid === auth.currentUser?.uid);
     const gameDocRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameDocRef);
     if (!gameSnap.exists()) return;
+    if (gameData.value?.status === "playing" && !player) {
+      alert("Spillet har allerede startet. Du kan ikke bli med nå.");
+      router.push("/yatzy-mp");
+    } else {
+      const data = gameSnap.data();
+      const players = data.players || [];
+      const scoreboards = data.scoreboards || [];
 
-    const data = gameSnap.data();
-    const players = data.players || [];
-    const scoreboards = data.scoreboards || [];
-
-    if (!players.some((p: User) => p.uid === user.uid)) {
-      players.push({ uid: user.uid, displayName: user.displayName });
-      scoreboards.push(emptyScoreboard());
-      await updateDoc(gameDocRef, {
-        players,
-        scoreboards,
-      });
+      if (!players.some((p: User) => p.uid === user.uid)) {
+        players.push({ uid: user.uid, displayName: user.displayName, willRestart: false });
+        scoreboards.push(emptyScoreboard());
+        await updateDoc(gameDocRef, {
+          players,
+          scoreboards,
+        });
+      }
     }
   };
 
@@ -540,23 +553,41 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // };
   const startGame = async (roomId: string) => {
-    if (!gameData.value) return;
     await updateDoc(doc(db, "games", roomId), {
       gameStarted: true,
       status: "playing",
     });
   };
+
+  const confirmRestart = async (roomId: string) => {
+    if (!gameData.value) return;
+    const player = gameData.value.players.find((p) => p.uid === auth.currentUser?.uid);
+    player!.willRestart = !player!.willRestart;
+    await updateDoc(doc(db, "games", roomId), {
+      players: gameData.value.players,
+    });
+    console.log("Player", player!.displayName, "willRestart set to", player!.willRestart);
+    const allPlayersWantRestart = gameData.value.players.every((p) => p.willRestart === true);
+    if (allPlayersWantRestart) {
+      await restartGame(roomId);
+      console.log("All players want to restart. Game is restarting...");
+    }
+  };
+
   const restartGame = async (roomId: string) => {
     if (!gameData.value) return;
-    await updateDoc(doc(db, "games", roomId), {
-      gameStarted: false,
-      status: "waiting",
-      dice: [1, 2, 3, 4, 5],
-      holdDie: [false, false, false, false, false],
-      activePlayer: gameData.value.players[0],
-      throwCount: 3,
-      scoreboards: gameData.value.players.map(() => emptyScoreboard()),
-    });
+    {
+      await updateDoc(doc(db, "games", roomId), {
+        gameStarted: false,
+        status: "waiting",
+        dice: [1, 2, 3, 4, 5],
+        holdDie: [false, false, false, false, false],
+        activePlayer: gameData.value.players[0],
+        throwCount: 3,
+        scoreboards: gameData.value.players.map(() => emptyScoreboard()),
+        players: gameData.value.players.map((p) => ({ ...p, willRestart: false })),
+      });
+    }
   };
 
   return {
@@ -597,5 +628,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
     restartGame,
     placeScoreAndNextTurn,
     winner,
+    confirmRestart,
   };
 });

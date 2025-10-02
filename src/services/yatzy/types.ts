@@ -45,31 +45,31 @@ interface DiceAndTurn {
   players: number;
 }
 
-class DiceAndTurn2 implements DiceAndTurn {
-  public dice: Die[];
-  public throwCountRemaining: number;
-  public holdDie: boolean[];
-  public activePlayer: number;
-  public players: number;
+// class DiceAndTurn2 implements DiceAndTurn {
+//   public dice: Die[];
+//   public throwCountRemaining: number;
+//   public holdDie: boolean[];
+//   public activePlayer: number;
+//   public players: number;
 
-  constructor() {
-    this.players = 1;
-    this.activePlayer = 1;
-    this.throwCountRemaining = 3;
-    this.holdDie = new Array(5).fill(false);
-    this.dice = [];
-  }
+//   constructor() {
+//     this.players = 1;
+//     this.activePlayer = 1;
+//     this.throwCountRemaining = 3;
+//     this.holdDie = new Array(5).fill(false);
+//     this.dice = [];
+//   }
 
-  nextTurn(): void {
-    const isLastPlayer = this.activePlayer < this.players;
-    this.activePlayer = isLastPlayer ? 1 : this.activePlayer + 1;
-    this.throwCountRemaining = 3;
-    for (let i = 0; i < this.holdDie.length; i++) {
-      this.holdDie[i] = false;
-    }
-    this.dice.length = 0;
-  }
-}
+//   nextTurn(): void {
+//     const isLastPlayer = this.activePlayer < this.players;
+//     this.activePlayer = isLastPlayer ? 1 : this.activePlayer + 1;
+//     this.throwCountRemaining = 3;
+//     for (let i = 0; i < this.holdDie.length; i++) {
+//       this.holdDie[i] = false;
+//     }
+//     this.dice.length = 0;
+//   }
+// }
 
 interface DieViewStateStyle {
   color: string;
@@ -105,7 +105,7 @@ interface LocalHighScore {
 
 interface GameRoomData {
   createdBy: { uid: string; displayName: string };
-  players: { uid: string; displayName: string }[];
+  players: { uid: string; displayName: string; willRestart: boolean }[];
   scoreboards: CompleteScoreboard[];
   dice: number[];
   holdDie: boolean[];

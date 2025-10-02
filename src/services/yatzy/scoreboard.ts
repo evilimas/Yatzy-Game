@@ -132,8 +132,6 @@ const emptyScoreboard = (): Scoreboard => ({
   yatzy: null,
 });
 
-export { scoreFunctions, scoreboardFunctions, emptyScoreboard, uiLabels, createFrequencyTable };
-
 export {
   compose,
   pointsSum,
@@ -143,4 +141,9 @@ export {
   positiveToFixedNumber,
   nOfAKind,
   pointsUpperSection,
+  scoreFunctions,
+  scoreboardFunctions,
+  emptyScoreboard,
+  uiLabels,
+  createFrequencyTable,
 };

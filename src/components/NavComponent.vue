@@ -6,7 +6,7 @@ const router = useRouter();
 const route = useRoute();
 
 const props = defineProps<{
-  userPhoto?: string | null | undefined;
+  userPhoto: string | null | undefined;
 }>();
 
 const emit = defineEmits<{
@@ -25,9 +25,6 @@ const userProfilePicture = props.userPhoto || defaultAvatar;
       Rediger Profil <v-icon name="la-user-edit-solid" scale="0.9" />
     </button>
   </nav>
-  <!-- <nav class="navbar" v-else-if="route.path === '/yatzy-mp/:roomId'">
-    <button @click="router.push('/yatzy-mp')">Tilbake til spillrom</button>
-  </nav> -->
   <nav
     class="navbar"
     v-else-if="route.path !== '/login' && route.path !== '/register' && route.path !== '/'"

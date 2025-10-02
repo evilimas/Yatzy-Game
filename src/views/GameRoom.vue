@@ -1,8 +1,5 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed, watch } from "vue";
-// import { useRouter } from "vue-router";
-// import type { User } from "firebase/auth";
-
 import { useFirebaseStore } from "@/stores/firebaseStore";
 import ScoreboardMP from "@/components/ScoreboardMP.vue";
 import DiceMP from "@/components/DiceMP.vue";
@@ -10,7 +7,6 @@ import PlayerMpComponent from "@/components/PlayerMpComponent.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import ConfettiExplosion from "vue-confetti-explosion";
 
-// const router = useRouter();
 const firebaseStore = useFirebaseStore();
 
 const props = defineProps<{ roomId: string }>();
@@ -39,17 +35,6 @@ const handleNewGame = (): void => {
   showWinnerModal.value = false;
 };
 
-// const users = ref<{ uid: string; displayName: string }[]>([]);
-
-// onMounted(async () => {
-//   const gameDoc = await getDoc(doc(firebaseStore.db, "games", roomId.value));
-//   if (gameDoc.exists()) {
-//     gameData.value = gameDoc.data() as GameRoomData;
-//     users.value = gameData.value.players || [];
-//   }
-// });
-// let stop: (() => void) | null = null;
-
 onMounted(() => {
   firebaseStore.listenToGameRoom(props.roomId);
 });
@@ -58,14 +43,13 @@ onMounted(() => {
 // });
 
 const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
+
+const usersWantRestart = computed(() => {
+  return firebaseStore.gameData?.players.filter((p) => p.willRestart).length ?? 0;
+});
 </script>
 
 <template>
-  <!-- <nav class="navbar">
-    <button @click="router.push('/yatzy-mp')">
-      <v-icon name="bi-arrow-return-left" scale="0.7" /> Tilbake
-    </button>
-  </nav> -->
   <div class="game-room">
     <div class="info">
       <h1>Game Room</h1>
@@ -74,9 +58,7 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
       <ul>
         <li v-for="user in users" :key="user.uid">{{ user.displayName }}</li>
       </ul>
-      <!-- <p v-if="firebaseStore.gameData">
-        Active Player: {{ firebaseStore.gameData.activePlayer.displayName }}
-      </p> -->
+
       <div v-if="!firebaseStore.gameData?.gameStarted">
         <p>Venter for spillere...</p>
 
@@ -93,10 +75,27 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
         Start Spill
         <v-icon name="md-notstarted-outlined" scale="0.8" animation="flash" color="white" />
       </button>
-      <button v-if="firebaseStore.gameData?.gameStarted" @click="firebaseStore.restartGame(roomId)">
-        Restart Spill <v-icon name="ri-restart-line" scale="0.8" animation="spin" color="white" />
+      <button
+        v-if="firebaseStore.gameData?.gameStarted"
+        @click="firebaseStore.confirmRestart(roomId)"
+      >
+        Start På Nytt <v-icon name="ri-restart-line" scale="0.8" animation="spin" color="white" />
       </button>
+      <!-- <button
+        :disabled="usersWantRestart !== users.length"
+        :style="{
+          cursor: usersWantRestart === users.length ? 'pointer' : 'not-allowed',
+        }"
+        v-if="firebaseStore.gameData?.gameStarted"
+        @click="firebaseStore.restartGame(roomId)"
+      >
+        Restart Spill <v-icon name="ri-restart-line" scale="0.8" animation="spin" color="white" />
+      </button> -->
+      <p v-if="usersWantRestart > 0">
+        {{ usersWantRestart }} / {{ users.length }} spillere ønsker å starte på nytt
+      </p>
     </div>
+
     <div>
       <div v-if="!firebaseStore.gameData">
         <p>Loading game data...</p>
@@ -147,7 +146,6 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
 
 <style scoped>
 .info {
-  /* margin-bottom: 1em; */
   background: #222;
   padding: 1em;
   border-radius: 8px;
@@ -159,7 +157,6 @@ const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
   gap: 2em;
 }
 .game-area {
-  /* flex: 1; */
   display: flex;
   flex-direction: column;
   align-items: center;

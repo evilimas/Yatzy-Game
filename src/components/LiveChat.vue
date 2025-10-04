@@ -3,6 +3,7 @@ import { ref, computed, nextTick, watch } from "vue";
 import { auth } from "@/services/firebase";
 import { Timestamp } from "firebase/firestore";
 import type { Message } from "@/services/yatzy/types";
+import defaultPicture from "/src/images/default-avatar.jpeg";
 
 interface Props {
   messages: Message[];
@@ -54,7 +55,7 @@ const sendMessage = () => {
     <div v-if="props.messages" class="messages" ref="messagesContainer">
       <div class="message" v-for="msg in props.messages" :key="msg.id">
         <img
-          :src="msg.profilePicture ? msg.profilePicture : './src/images/default-avatar.jpeg'"
+          :src="msg.profilePicture ? msg.profilePicture : defaultPicture"
           alt="User Avatar"
           width="27"
           height="27"

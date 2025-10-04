@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import type { User } from "firebase/auth";
+import defaultPicture from "/src/images/default-avatar.jpeg";
 
 interface Props {
   users: User[];
@@ -24,7 +25,7 @@ const chatArrow = computed(() => (isUsersActive.value ? "▲" : "▼"));
     <div class="users-container" v-if="isUsersActive">
       <ul>
         <li v-for="user in users" :key="user.uid">
-          <img :src="user.photoURL ? user.photoURL : '/src/images/default-avatar.jpeg'" alt="" />
+          <img :src="user.photoURL ? user.photoURL : defaultPicture" alt="" />
           <p>{{ user.displayName }}</p>
         </li>
       </ul>

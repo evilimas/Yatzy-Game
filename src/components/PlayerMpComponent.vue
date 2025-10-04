@@ -30,7 +30,7 @@ defineProps<Props>();
 h2 {
   text-align: center;
   color: #239ba7;
-  padding: 0.5em;
+  padding: 0.2em;
   text-shadow: 0 0 5px #239ba7;
   font-size: 2em;
 }

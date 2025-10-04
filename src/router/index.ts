@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import GameRoom from "../views/GameRoom.vue";
 import LoginView from "../views/LoginView.vue";
+import YatzyView from "../views/YatzyView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,7 +27,7 @@ const router = createRouter({
     {
       path: "/yatzy",
       name: "yatzy",
-      component: () => import("../views/YatzyView.vue"),
+      component: YatzyView,
       props: true,
     },
     {

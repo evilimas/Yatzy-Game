@@ -166,13 +166,7 @@ input {
   top: 2px;
 }
 .send-btn {
-  /* background-color: #239ba7; */
-  /* color: white; */
   border: 1px solid #4e4e4e;
-
-  /* padding: 5px 10px; */
-  /* border-radius: 4px; */
-  /* cursor: pointer; */
 }
 .live-chat {
   scrollbar-color: rgb(66, 66, 66) #239ba7;

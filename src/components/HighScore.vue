@@ -75,7 +75,6 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
   color: #fff;
   padding: 0.5em;
   border-radius: 8px;
-  /* width: 380px; */
 }
 .high-score-header {
   display: flex;

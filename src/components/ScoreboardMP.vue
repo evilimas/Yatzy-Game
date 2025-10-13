@@ -15,10 +15,6 @@ defineProps<Props>();
 const emit = defineEmits<{
   (e: "placeScore", combination: string | null, room: string): void;
 }>();
-
-// function isAlwaysDisabled(combination: string) {
-//   return combination === "sum" || combination === "bonus" || combination === "total";
-// }
 </script>
 
 <template>
@@ -121,8 +117,7 @@ td {
 table {
   border: 1px solid #239ba7;
   border-radius: 12px;
-  background: #292929; /* or your preferred color */
-  /* border-collapse: separate; */
+  background: #292929;
   overflow: hidden;
 }
 </style>

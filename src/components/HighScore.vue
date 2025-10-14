@@ -4,7 +4,7 @@ import type { HighScore, LocalHighScore } from "@/services/yatzy/types";
 import { Timestamp } from "firebase/firestore";
 
 interface Props {
-  isGameFinished: boolean;
+  // isGameFinished: boolean;
   scores: LocalHighScore[];
   onlineScores: HighScore[];
   displayDate: (date: Timestamp) => string;

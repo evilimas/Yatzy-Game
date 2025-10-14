@@ -7,7 +7,7 @@ import Player from "@/components/PlayerComponent.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import HighScore from "@/components/HighScore.vue";
 import LiveChat from "@/components/LiveChat.vue";
-import Users from "@/components/UsersComponent.vue";
+import UsersComponent from "@/components/UsersComponent.vue";
 import ConfettiExplosion from "vue-confetti-explosion";
 import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "@/stores/firebaseStore";
@@ -115,7 +115,7 @@ const handleRestartGame = (): void => {
     />
   </div>
   <div class="users">
-    <Users :users="firebaseStore.onlineUsers" />
+    <UsersComponent :users="firebaseStore.onlineUsers" />
   </div>
 </template>
 

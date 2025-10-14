@@ -3,9 +3,14 @@ import { ref } from "vue";
 import { auth } from "@/services/firebase";
 import { useRouter } from "vue-router";
 import { useFirebaseStore } from "@/stores/firebaseStore";
+import { yatzyStore } from "../stores/yatzyStore";
 import type { User } from "firebase/auth";
 import type { GameRoomData } from "@/services/yatzy/types";
+import UsersComponent from "@/components/UsersComponent.vue";
+import LiveChat from "@/components/LiveChat.vue";
+import HighScore from "@/components/HighScore.vue";
 
+const store = yatzyStore();
 const firebaseStore = useFirebaseStore();
 const router = useRouter();
 const user = ref<User | null>(firebaseStore.user);
@@ -99,19 +104,28 @@ const selectGameRoom = (roomId: string) => {
       <h3>Ingen spillrom tilgjengelig.</h3>
     </div>
   </div>
+  <div class="high-scores">
+    <HighScore
+      :scores="store.scores"
+      :onlineScores="firebaseStore.highScores"
+      :display-date="firebaseStore.displayDate"
+    />
+  </div>
+  <div class="live-chat">
+    <LiveChat
+      :messages="firebaseStore.messages"
+      @post-message="firebaseStore.postMessage"
+      @delete-msg="firebaseStore.deleteMessage"
+      @edit-msg="firebaseStore.editMessage"
+      :display-date="firebaseStore.displayDate"
+    />
+  </div>
+  <div class="users">
+    <UsersComponent :users="firebaseStore.onlineUsers" />
+  </div>
 </template>
 
 <style scoped>
-/* .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #222;
-  color: #fff;
-  padding: 0.8em;
-  border-bottom: 2px solid #444;
-} */
 .mp-container {
   margin-top: 70px;
   display: flex;
@@ -151,5 +165,34 @@ h1 {
   display: flex;
   gap: 6px;
   border: none;
+}
+
+.high-scores {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  width: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #239ba7;
+  border-radius: 10px;
+  padding: 3px;
+}
+.live-chat {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  width: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #239ba7;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.users {
+  position: fixed;
+  top: 60px;
+  left: 10px;
 }
 </style>

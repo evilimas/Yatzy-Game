@@ -172,6 +172,12 @@ const usersWantRestart = computed(() => {
   padding: 0.8em;
   border-bottom: 2px solid #444;
 }
+@media (min-width: 1000px) {
+  .game-room {
+    align-items: center;
+    margin-top: 150px;
+  }
+}
 @media (max-width: 768px) {
   .game-room {
     flex-direction: column-reverse;

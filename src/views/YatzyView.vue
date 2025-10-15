@@ -13,7 +13,7 @@ import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "@/stores/firebaseStore";
 
 // const router = useRouter();
-const showWinnerModal = ref(false);
+const showWinnerModal = ref<boolean>(false);
 const store = yatzyStore();
 const firebaseStore = useFirebaseStore();
 
@@ -120,13 +120,13 @@ const handleRestartGame = (): void => {
 </template>
 
 <style scoped>
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .about {
     min-height: 100vh;
     display: flex;
     align-items: center;
   }
-}
+} */
 
 #game {
   display: flex;
@@ -180,5 +180,14 @@ h1 {
   color: #239ba7;
   font-weight: 600;
   font-size: 2rem;
+}
+
+@media (min-width: 1000px) {
+  #game {
+    align-items: center;
+    margin-top: 150px;
+  }
+  .users {
+  }
 }
 </style>

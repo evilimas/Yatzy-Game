@@ -28,6 +28,7 @@ const userFirstName = firebaseStore.user?.displayName
     </button>
   </nav> -->
   <main>
+    <img class="dice-img" src="../images/blue-dice.png" alt="dice" />
     <h1 class="green">
       Velkommen <span>{{ userFirstName }}</span> til det beste Yatzy-spillet!
     </h1>
@@ -63,6 +64,16 @@ const userFirstName = firebaseStore.user?.displayName
 </template>
 
 <style scoped>
+a {
+  font-size: 1.3em;
+  margin-left: -10px;
+}
+.dice-img {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
 div {
   display: flex;
 }

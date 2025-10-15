@@ -21,6 +21,7 @@ watch(
 <template>
   <div class="login-view">
     <section id="logged-out-view" v-if="loginPage">
+      <img class="yatzy-logo" src="../images/yatzyy.png" alt="" />
       <h2>For å starte spillet, vennligst logg inn.</h2>
       <div class="container google">
         <div class="google-login">
@@ -60,6 +61,7 @@ watch(
       </div>
     </section>
     <section id="logged-out-view" v-if="!loginPage">
+      <img class="yatzy-logo" src="../images/yatzyy.png" alt="" />
       <h2>Opprett en konto</h2>
       <div class="container">
         <form action="" @submit.prevent>
@@ -101,8 +103,6 @@ section {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 420px;
 }
 .container {
   display: flex;
@@ -151,5 +151,10 @@ form {
 .error-message {
   color: red;
   font-weight: 600;
+}
+.yatzy-logo {
+  width: 350px;
+  height: auto;
+  margin-bottom: 20px;
 }
 </style>

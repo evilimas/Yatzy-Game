@@ -56,7 +56,7 @@ const selectGameRoom = (roomId: string) => {
 
 <template>
   <div class="mp-container">
-    <h1>Yatzy Multiplayer</h1>
+    <img class="dice-img" src="../images/yatzy-mp.png" alt="" />
     <p class="info-text">
       For å spille Yatzy Multiplayer, vennligst opprett eller bli med i et spillrom.
     </p>
@@ -126,6 +126,13 @@ const selectGameRoom = (roomId: string) => {
 </template>
 
 <style scoped>
+.dice-img {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  /* margin-bottom: 20px; */
+}
 .mp-container {
   margin-top: 70px;
   display: flex;

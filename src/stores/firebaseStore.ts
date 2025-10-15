@@ -72,7 +72,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   //   sign in functions
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (): Promise<void> => {
     try {
       await signInWithPopup(auth, provider);
       router.push("/home");
@@ -82,7 +82,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const signInWithEmail = async (email: string, password: string) => {
+  const signInWithEmail = async (email: string, password: string): Promise<void> => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/home");
@@ -94,7 +94,11 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   //   create user functions
 
-  const createAccount = async (email: string, password: string, displayName: string) => {
+  const createAccount = async (
+    email: string,
+    password: string,
+    displayName: string
+  ): Promise<void> => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       if (userCredential.user) {
@@ -109,7 +113,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // sign out functions
 
-  const signOutUser = async () => {
+  const signOutUser = async (): Promise<void> => {
     try {
       await setUserOffline(auth.currentUser!);
       await signOut(auth);
@@ -121,7 +125,10 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   //   update user functions
 
-  const updateUserProfile = async (profileData: { displayName: string; photoURL: string }) => {
+  const updateUserProfile = async (profileData: {
+    displayName: string;
+    photoURL: string;
+  }): Promise<void> => {
     try {
       if (user.value) {
         await updateProfile(user.value, profileData);
@@ -133,7 +140,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   //   fetch user online status functions
 
-  const setUserOnline = async (user: User) => {
+  const setUserOnline = async (user: User): Promise<void> => {
     try {
       await setDoc(doc(db, "usersStatus", user.uid), {
         uid: user.uid,
@@ -147,7 +154,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const fetchOnlineUsers = async () => {
+  const fetchOnlineUsers = async (): Promise<void> => {
     const onlineUsersRef = collection(db, "usersStatus");
     const q = query(onlineUsersRef, where("online", "==", true));
     onSnapshot(q, (querySnapshot) => {
@@ -160,14 +167,14 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // set user status to offline
 
-  const setUserOffline = async (user: User) => {
+  const setUserOffline = async (user: User): Promise<void> => {
     await updateDoc(doc(db, "usersStatus", user.uid), {
       online: false,
     });
   };
 
   //   Live chat functions
-  const addMessageToDB = async (message: string, user: User | null) => {
+  const addMessageToDB = async (message: string, user: User | null): Promise<void> => {
     try {
       const docRef = await addDoc(collection(db, "messages"), {
         messageBody: message,
@@ -198,7 +205,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   });
   // };
 
-  const fetchInRealTimeAndRenderMessagesFromDB = async () => {
+  const fetchInRealTimeAndRenderMessagesFromDB = async (): Promise<void> => {
     const postsRef = collection(db, "messages");
 
     const q = query(postsRef, where("createdAt", "!=", null), orderBy("createdAt", "asc"));
@@ -222,7 +229,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   return messages.value.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis());
   // });
 
-  const editMessageInDB = async (docId: string, newText: string) => {
+  const editMessageInDB = async (docId: string, newText: string): Promise<void> => {
     const messageDoc = doc(db, "messages", docId);
     await updateDoc(messageDoc, { messageBody: newText });
   };

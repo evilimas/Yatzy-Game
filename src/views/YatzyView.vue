@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-// import { useRouter } from "vue-router";
 import Scoreboard from "@/components/ScoreboardSP.vue";
 import Dice from "@/components/DiceSP.vue";
 import Player from "@/components/PlayerComponent.vue";
@@ -12,7 +11,6 @@ import ConfettiExplosion from "vue-confetti-explosion";
 import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "@/stores/firebaseStore";
 
-// const router = useRouter();
 const showWinnerModal = ref<boolean>(false);
 const store = yatzyStore();
 const firebaseStore = useFirebaseStore();
@@ -120,14 +118,6 @@ const handleRestartGame = (): void => {
 </template>
 
 <style scoped>
-/* @media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-} */
-
 #game {
   display: flex;
   flex-direction: column;
@@ -155,22 +145,11 @@ h1 {
   width: auto;
   max-height: 400px;
   overflow-y: auto;
-  /* background-color: rgba(255, 255, 255, 0.8); */
   background-color: #239ba7;
-  /* color: white; */
   border-radius: 10px;
   padding: 3px;
 }
-/* .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #222;
-  color: #fff;
-  padding: 0.8em;
-  border-bottom: 2px solid #444;
-} */
+
 .users {
   position: fixed;
   top: 60px;
@@ -187,7 +166,7 @@ h1 {
     align-items: center;
     margin-top: 150px;
   }
-  .users {
-  }
+  /* .users {
+  } */
 }
 </style>

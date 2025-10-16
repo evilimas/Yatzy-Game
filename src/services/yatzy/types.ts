@@ -90,6 +90,14 @@ interface Message {
   displayName: string;
   profilePicture: string | null;
 }
+interface RoomMessage {
+  id: string;
+  uid: string;
+  messageBody: string;
+  displayName: string;
+  profilePicture: string | null;
+  // createdAt: Timestamp;
+}
 
 interface HighScore {
   id: string;
@@ -115,7 +123,13 @@ interface GameRoomData {
   throwCount: number;
   createdAt: Timestamp;
   uid: string;
+  messages: RoomMessage[];
 }
+// interface Player {
+//   uid: string;
+//   displayName: string;
+
+// }
 
 export { dieValues };
 export type {
@@ -133,4 +147,5 @@ export type {
   HighScore,
   LocalHighScore,
   GameRoomData,
+  RoomMessage,
 };

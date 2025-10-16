@@ -6,6 +6,7 @@ import DiceMP from "@/components/DiceMP.vue";
 import PlayerMpComponent from "@/components/PlayerMpComponent.vue";
 import WinnerModal from "@/components/WinnerModal.vue";
 import ConfettiExplosion from "vue-confetti-explosion";
+import RoomLiveChat from "@/components/RoomLiveChat.vue";
 
 const firebaseStore = useFirebaseStore();
 
@@ -142,6 +143,13 @@ const usersWantRestart = computed(() => {
       </div>
     </div>
   </div>
+  <div class="live-chat">
+    <RoomLiveChat
+      :messages="firebaseStore.gameData?.messages || []"
+      @post-room-message="firebaseStore.postRoomMessage"
+      :room-id="roomId"
+    />
+  </div>
 </template>
 
 <style scoped>
@@ -171,6 +179,17 @@ const usersWantRestart = computed(() => {
   color: #fff;
   padding: 0.8em;
   border-bottom: 2px solid #444;
+}
+.live-chat {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  width: auto;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #239ba7;
+  border-radius: 10px;
+  padding: 3px;
 }
 @media (min-width: 1000px) {
   .game-room {

@@ -411,6 +411,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
       throwCount: 3,
       createdAt: serverTimestamp(),
       uid: user?.uid,
+      messages: [],
     });
     console.log("Game room created with ID:", gameRef.id);
     return gameRef.id;
@@ -425,6 +426,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   // };
 
   const joinGameRoom = async (gameId: string, user: User) => {
+    if (!gameData.value) return;
     const player = gameData.value!.players.find((p) => p.uid === auth.currentUser?.uid);
     const gameDocRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameDocRef);
@@ -597,6 +599,42 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
+  // gameroom chat / messages functions
+
+  const addRoomMessageToDB = async (message: string, gameId: string, user: User) => {
+    // const player: Player | undefined = gameData.value!.players.find((p) => p.uid === auth.currentUser?.uid);
+    const gameDocRef = doc(db, "games", gameId);
+    const gameSnap = await getDoc(gameDocRef);
+    const messages = gameSnap.data()?.messages || [];
+    if (!gameSnap.exists()) return;
+
+    const data = gameSnap.data();
+    await updateDoc(gameDocRef, {
+      messages: [
+        ...messages,
+        {
+          id: `${user.uid}-${Date.now()}`,
+          // createdAt: serverTimestamp(),
+          messageBody: message,
+          uid: user.uid,
+          displayName: user.displayName || user.email,
+          profilePicture: user.photoURL,
+        },
+      ],
+    });
+    console.log("Room message added to DB for room ID:", gameId);
+  };
+
+  const postRoomMessage = (message: string, roomId: string) => {
+    const messageBody = message;
+    const user = auth.currentUser;
+
+    if (messageBody) {
+      addRoomMessageToDB(messageBody, roomId!, user!);
+      console.log("Room message posted to room ID:", roomId, "Message:", messageBody);
+    }
+  };
+
   return {
     db,
     user,
@@ -636,5 +674,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
     placeScoreAndNextTurn,
     winner,
     confirmRestart,
+    postRoomMessage,
   };
 });

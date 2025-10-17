@@ -426,27 +426,25 @@ export const useFirebaseStore = defineStore("firebase", () => {
   // };
 
   const joinGameRoom = async (gameId: string, user: User) => {
-    if (!gameData.value) return;
-    const player = gameData.value!.players.find((p) => p.uid === auth.currentUser?.uid);
+    // const player = gameData.value!.players.find((p) => p.uid === auth.currentUser?.uid);
     const gameDocRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameDocRef);
     if (!gameSnap.exists()) return;
-    if (gameData.value?.status === "playing" && !player) {
+    const data = gameSnap.data();
+    const alreadyJoined = data.players.some((p: User) => p.uid === user.uid);
+    if (gameData.value?.status === "playing" && !alreadyJoined) {
       alert("Spillet har allerede startet. Du kan ikke bli med nå.");
       router.push("/yatzy-mp");
-    } else {
-      const data = gameSnap.data();
-      const players = data.players || [];
-      const scoreboards = data.scoreboards || [];
+    }
 
-      if (!players.some((p: User) => p.uid === user.uid)) {
-        players.push({ uid: user.uid, displayName: user.displayName, willRestart: false });
-        scoreboards.push(emptyScoreboard());
-        await updateDoc(gameDocRef, {
-          players,
-          scoreboards,
-        });
-      }
+    if (!alreadyJoined) {
+      await updateDoc(gameDocRef, {
+        players: [
+          ...data.players,
+          { uid: user.uid, displayName: user.displayName, willRestart: false },
+        ],
+        scoreboards: [...data.scoreboards, emptyScoreboard()],
+      });
     }
   };
 

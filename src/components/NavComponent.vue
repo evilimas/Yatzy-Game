@@ -6,7 +6,7 @@ const router = useRouter();
 const route = useRoute();
 
 const props = defineProps<{
-  userPhoto: string;
+  userPhoto?: string;
 }>();
 
 const emit = defineEmits<{

@@ -1,16 +1,9 @@
 <script setup lang="ts">
-// import { useRouter } from "vue-router";
 import { yatzyStore } from "../stores/yatzyStore";
 import { useFirebaseStore } from "../stores/firebaseStore";
-// import NavComponent from "@/components/NavComponent.vue";
 
-// const router = useRouter();
 const store = yatzyStore();
 const firebaseStore = useFirebaseStore();
-
-// const userProfile = firebaseStore.user?.photoURL
-//   ? firebaseStore.user.photoURL
-//   : "./src/images/default-avatar.jpeg";
 
 const userFirstName = firebaseStore.user?.displayName
   ? firebaseStore.user.displayName.split(" ")[0]
@@ -18,15 +11,6 @@ const userFirstName = firebaseStore.user?.displayName
 </script>
 
 <template>
-  <!-- <nav class="navbar">
-    <img :src="userProfile" alt="User Avatar" />
-    <button @click="firebaseStore.signOutUser">
-      Logg ut <v-icon name="co-account-logout" scale="0.9" />
-    </button>
-    <button @click="router.push('/edit-profile')">
-      Rediger Profil <v-icon name="la-user-edit-solid" scale="0.9" />
-    </button>
-  </nav> -->
   <main>
     <img class="dice-img" src="../images/blue-dice.png" alt="dice" />
     <h1 class="green">
@@ -72,7 +56,7 @@ a {
   max-width: 400px;
   width: 100%;
   height: auto;
-  margin-bottom: 20px;
+  margin-bottom: -20px;
 }
 div {
   display: flex;

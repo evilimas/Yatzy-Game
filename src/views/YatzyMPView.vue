@@ -131,7 +131,6 @@ const selectGameRoom = (roomId: string) => {
   width: 100%;
   height: auto;
   border-radius: 0;
-  /* margin-bottom: 20px; */
 }
 .mp-container {
   margin-top: 70px;

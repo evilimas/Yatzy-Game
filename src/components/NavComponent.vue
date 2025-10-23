@@ -13,11 +13,11 @@ const emit = defineEmits<{
   (e: "signOut"): void;
 }>();
 
-const userProfilePicture = props.userPhoto || defaultAvatar;
+// const userProfilePicture = props.userPhoto || defaultAvatar;
 </script>
 <template>
   <nav class="navbar" v-if="route.path == '/home'">
-    <img :src="userProfilePicture" alt="User Avatar" />
+    <img :src="props.userPhoto || defaultAvatar" alt="User Avatar" />
     <button @click="emit('signOut')">
       Logg ut <v-icon name="co-account-logout" scale="0.9" />
     </button>

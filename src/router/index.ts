@@ -3,6 +3,8 @@ import HomeView from "../views/HomeView.vue";
 import GameRoom from "../views/GameRoom.vue";
 import LoginView from "../views/LoginView.vue";
 import YatzyView from "../views/YatzyView.vue";
+import YatzyMPView from "../views/YatzyMPView.vue";
+import EditProfileView from "../views/EditProfileView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,7 +18,7 @@ const router = createRouter({
     {
       path: "/edit-profile",
       name: "edit-profile",
-      component: () => import("../views/EditProfileView.vue"),
+      component: EditProfileView,
       props: true,
     },
     {
@@ -33,7 +35,7 @@ const router = createRouter({
     {
       path: "/yatzy-mp",
       name: "yatzy-mp",
-      component: () => import("../views/YatzyMPView.vue"),
+      component: YatzyMPView,
       props: true,
     },
     {

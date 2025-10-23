@@ -166,7 +166,6 @@ h1 {
     align-items: center;
     margin-top: 150px;
   }
-  /* .users {
-  } */
+ 
 }
 </style>

@@ -47,10 +47,10 @@ const sendMessage = () => {
     <button @click="isChatActive = !isChatActive">
       {{ chatArrow }}
     </button>
-    <h3>Live Chat <v-icon name="bi-chat-dots" scale="1.5" /></h3>
+    <h3>Spillrom Chat <v-icon name="bi-chat-dots" scale="1.5" /></h3>
   </div>
   <div v-if="isChatActive" class="chat-content">
-    <div v-if="props.messages" class="messages" ref="messagesContainer">
+    <div v-if="props.messages.length > 0" class="messages" ref="messagesContainer">
       <div class="message" v-for="msg of props.messages" :key="msg.id">
         <img
           :src="msg.profilePicture ? msg.profilePicture : defaultPicture"
@@ -59,16 +59,8 @@ const sendMessage = () => {
           height="27"
         />
         <div class="message-content">
-          <!-- <p class="time">{{ props.displayDate(msg.createdAt) }}</p> -->
           <h4>{{ msg.displayName }} : {{ msg.messageBody }}</h4>
-          <div class="chat-btns" v-show="auth.currentUser?.uid === msg.uid">
-            <!-- <button class="delete-btn" @click="emit('delete-msg', msg.id, msg.uid)">
-              <v-icon name="md-delete" style="font-size: 1em" />
-            </button>
-            <button class="edit-btn" @click="emit('edit-msg', msg.id, msg.uid)">
-              <v-icon name="fa-edit" style="font-size: 1em" />
-            </button> -->
-          </div>
+          <div class="chat-btns" v-show="auth.currentUser?.uid === msg.uid"></div>
         </div>
       </div>
     </div>
@@ -78,7 +70,6 @@ const sendMessage = () => {
     <div class="input-container">
       <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type your message..." />
       <button @click="sendMessage" class="send-btn">Send</button>
-      <!-- <button @click="firebaseStore.fetchOnceAndRenderMessagesFromDB">Fetch Messages</button> -->
     </div>
   </div>
 </template>

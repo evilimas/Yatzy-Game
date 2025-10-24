@@ -11,7 +11,6 @@ interface Props {
 defineProps<Props>();
 
 const emit = defineEmits<{
-  // nextTurn: [string | null];
   (e: "placeScore", score: string | null): void;
 }>();
 </script>

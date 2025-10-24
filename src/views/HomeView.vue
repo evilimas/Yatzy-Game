@@ -40,7 +40,6 @@ const userFirstName = firebaseStore.user?.displayName
         <p>eller</p>
         <div class="mp-container">
           <RouterLink to="/yatzy-mp">Spill Yatzy Online</RouterLink>
-          <p>- Under utvikling</p>
         </div>
       </nav>
     </div>

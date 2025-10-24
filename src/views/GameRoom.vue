@@ -39,9 +39,6 @@ const handleNewGame = (): void => {
 onMounted(() => {
   firebaseStore.listenToGameRoom(props.roomId);
 });
-// onUnmounted(() => {
-//   if (stop) stop();
-// });
 
 const users = computed<Player[]>(() => firebaseStore.gameData?.players ?? []);
 

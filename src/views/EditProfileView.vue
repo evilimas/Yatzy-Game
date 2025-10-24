@@ -26,6 +26,10 @@ const updateProfile = async () => {
 </script>
 
 <template>
+  <div class="top-section">
+    <img :src="firebaseStore.user?.photoURL || './default-avatar.jpeg'" alt="" />
+    <p>{{ firebaseStore.user?.displayName || "Uten navn" }}</p>
+  </div>
   <div class="container">
     <h1>Rediger Profil</h1>
     <form @submit.prevent="updateProfile">
@@ -65,5 +69,22 @@ input {
 }
 label {
   font-weight: bold;
+}
+.top-section {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 1em;
+  align-items: center;
+}
+img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 1em;
+}
+.top-section p {
+  font-size: 1.8em;
+  font-weight: 600;
 }
 </style>

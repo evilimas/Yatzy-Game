@@ -52,7 +52,7 @@ const sendMessage = () => {
     <h3>Live Chat <v-icon name="bi-chat-dots" scale="1.5" /></h3>
   </div>
   <div v-if="isChatActive" class="chat-content">
-    <div v-if="props.messages" class="messages" ref="messagesContainer">
+    <div v-if="props.messages.length" class="messages" ref="messagesContainer">
       <div class="message" v-for="msg in props.messages" :key="msg.id">
         <img
           :src="msg.profilePicture ? msg.profilePicture : defaultPicture"
@@ -75,7 +75,7 @@ const sendMessage = () => {
       </div>
     </div>
     <div v-else class="no-chat">
-      <p>ingen meldinger</p>
+      <p>Det er ingen meldinger</p>
     </div>
     <div class="input-container">
       <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type your message..." />
@@ -110,10 +110,11 @@ const sendMessage = () => {
   min-width: 400px;
   gap: 0.3em;
 }
-.no-chat {
+.no-chat p {
   text-align: center;
-  color: #1f1f1f;
-  font-weight: 800;
+  color: #ffffff;
+  font-weight: bold;
+  padding: 0.5em;
 }
 img {
   border-radius: 50%;

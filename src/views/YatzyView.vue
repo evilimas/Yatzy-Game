@@ -97,7 +97,6 @@ const handleRestartGame = (): void => {
   </div>
   <div class="high-scores">
     <HighScore
-      :isGameFinished="store.isGameFinished"
       :scores="store.scores"
       :onlineScores="firebaseStore.highScores"
       :display-date="firebaseStore.displayDate"
@@ -166,6 +165,5 @@ h1 {
     align-items: center;
     margin-top: 150px;
   }
- 
 }
 </style>

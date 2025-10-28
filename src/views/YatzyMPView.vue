@@ -45,13 +45,6 @@ const selectGameRoom = (roomId: string) => {
     console.log("User is not logged in.");
   }
 };
-
-// watch(
-//   () => firebaseStore.listenToGameRoom,
-//   (newRooms) => {
-//     console.log("Updated game rooms:", newRooms);
-//   }
-// );
 </script>
 
 <template>

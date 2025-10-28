@@ -79,16 +79,6 @@ const usersWantRestart = computed(() => {
       >
         Start På Nytt <v-icon name="ri-restart-line" scale="0.8" animation="spin" color="white" />
       </button>
-      <!-- <button
-        :disabled="usersWantRestart !== users.length"
-        :style="{
-          cursor: usersWantRestart === users.length ? 'pointer' : 'not-allowed',
-        }"
-        v-if="firebaseStore.gameData?.gameStarted"
-        @click="firebaseStore.restartGame(roomId)"
-      >
-        Restart Spill <v-icon name="ri-restart-line" scale="0.8" animation="spin" color="white" />
-      </button> -->
       <p v-if="usersWantRestart > 0">
         {{ usersWantRestart }} / {{ users.length }} spillere ønsker å starte på nytt
       </p>

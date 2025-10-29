@@ -4,7 +4,6 @@ import type { HighScore, LocalHighScore } from "@/services/yatzy/types";
 import { Timestamp } from "firebase/firestore";
 
 interface Props {
-  // isGameFinished: boolean;
   scores: LocalHighScore[];
   onlineScores: HighScore[];
   displayDate: (date: Timestamp) => string;
@@ -43,6 +42,15 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
         <li v-for="(score, index) in onlineScores" :key="index">
           {{ score.user }} : {{ score.score }} Poeng -
           {{ props.displayDate(score.createdAt) }}
+          <span class="trophy" v-if="score === onlineScores[0]">
+            <v-icon name="gi-trophy-cup" scale="1.3" color="gold"
+          /></span>
+          <span class="trophy" v-if="score === onlineScores[1]">
+            <v-icon name="gi-trophy-cup" scale="1.3" color="silver"
+          /></span>
+          <span class="trophy" v-if="score === onlineScores[2]">
+            <v-icon name="gi-trophy-cup" scale="1.3" color="brown"
+          /></span>
         </li>
       </ol>
       <div v-else>
@@ -60,6 +68,15 @@ const turnCorrectScores = (online: boolean, local: boolean) => {
         <li v-for="(score, index) in scores" :key="index">
           {{ score.name }} : {{ score.score }} Poeng -
           {{ score.date }}
+          <span class="trophy" v-if="score === scores[0]">
+            <v-icon name="gi-trophy-cup" scale="1.3" color="gold"
+          /></span>
+          <span class="trophy" v-if="score === scores[1]">
+            <v-icon name="gi-trophy-cup" scale="1.3" color="silver"
+          /></span>
+          <span class="trophy" v-if="score === scores[2]">
+            <v-icon name="gi-trophy-cup" scale="1.3" color="brown"
+          /></span>
         </li>
       </ol>
       <div v-else>
@@ -91,5 +108,20 @@ h3 {
 }
 button.active {
   border: solid 3px #cfcfcf;
+}
+
+/* .trophy {
+  justify-content: space-around;
+} */
+
+/* ol {
+  display: flex;
+  flex-direction: column;
+} */
+li {
+  /* list-style: decimal; */
+  /* display: flex; */
+  justify-content: space-between;
+  list-style: decimal inside; /* Forces numbers to show inside */
 }
 </style>

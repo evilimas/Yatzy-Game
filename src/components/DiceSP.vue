@@ -11,8 +11,6 @@ interface Props {
 const emit = defineEmits<{
   (e: "throwDice"): void;
   (e: "flip", index: number): void;
-  // throwDice: [];
-  // flip: [number];
 }>();
 
 const props = defineProps<Props>();

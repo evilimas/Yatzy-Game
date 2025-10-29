@@ -38,7 +38,7 @@ const emit = defineEmits<{
   </nav>
 </template>
 
-<style>
+<style scoped>
 .navbar {
   display: flex;
   gap: 10px;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
 import type { User } from "firebase/auth";
+import { computed, ref } from "vue";
 import defaultPicture from "/src/images/default-avatar.jpeg";
 
 interface Props {
@@ -33,7 +33,7 @@ const chatArrow = computed(() => (isUsersActive.value ? "▲" : "▼"));
   </div>
 </template>
 
-<style>
+<style scoped>
 .users-online {
   background: #239ba7;
   padding: 0.2em;
@@ -68,5 +68,6 @@ li {
 }
 img {
   width: 30px;
+  border-radius: 50%;
 }
 </style>

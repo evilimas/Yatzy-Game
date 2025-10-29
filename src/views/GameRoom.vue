@@ -66,8 +66,8 @@ const usersWantRestart = computed(() => {
       <button
         v-if="!firebaseStore.gameData?.gameStarted"
         class="button"
-        :disabled="users.length < 1"
-        :style="{ cursor: users.length >= 1 ? 'pointer' : 'not-allowed' }"
+        :disabled="users.length < 2"
+        :style="{ cursor: users.length >= 2 ? 'pointer' : 'not-allowed' }"
         @click="firebaseStore.startGame(roomId)"
       >
         Start Spill

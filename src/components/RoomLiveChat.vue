@@ -74,7 +74,7 @@ const sendMessage = () => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .messages {
   max-height: 300px;
   max-width: 500px;

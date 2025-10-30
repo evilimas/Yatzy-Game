@@ -109,19 +109,4 @@ h3 {
 button.active {
   border: solid 3px #cfcfcf;
 }
-
-/* .trophy {
-  justify-content: space-around;
-} */
-
-/* ol {
-  display: flex;
-  flex-direction: column;
-} */
-li {
-  /* list-style: decimal; */
-  /* display: flex; */
-  justify-content: space-between;
-  list-style: decimal inside; /* Forces numbers to show inside */
-}
 </style>

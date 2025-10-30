@@ -12,8 +12,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "signOut"): void;
 }>();
-
-// const userProfilePicture = props.userPhoto || defaultAvatar;
 </script>
 <template>
   <nav class="navbar" v-if="route.path == '/home'">

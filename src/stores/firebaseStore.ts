@@ -87,7 +87,6 @@ export const useFirebaseStore = defineStore("firebase", () => {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/home");
     } catch (error) {
-      // alert((error as Error).message);
       errorMsg.value = (error as Error).message || "Error signing in with email and password";
     }
   };

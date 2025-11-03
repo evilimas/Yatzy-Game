@@ -244,7 +244,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const deleteMessagefromDB = async (docId: string) => {
+  const deleteMessagefromDB = async (docId: string): Promise<void> => {
     await deleteDoc(doc(db, "messages", docId));
   };
 
@@ -258,7 +258,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const deleteGameRoomfromDB = async (roomId: string) => {
+  const deleteGameRoomfromDB = async (roomId: string): Promise<void> => {
     await deleteDoc(doc(db, "games", roomId));
   };
 
@@ -272,7 +272,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const postMessage = (message: string) => {
+  const postMessage = (message: string): void => {
     const messageBody = message;
     const user = auth.currentUser;
 

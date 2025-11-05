@@ -281,7 +281,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const displayDate = (firebaseDate: Timestamp) => {
+  const displayDate = (firebaseDate: Timestamp): string => {
     if (!firebaseDate) return "Date processing";
     const date = firebaseDate.toDate();
     const day = date.getDate();

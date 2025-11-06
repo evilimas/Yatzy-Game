@@ -383,7 +383,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     });
   };
 
-  const fetchInRealTimeAndRenderScoresFromDB = async () => {
+  const fetchInRealTimeAndRenderScoresFromDB = async (): Promise<void> => {
     const querySnapshot = await getDocs(collection(db, "highScores"));
     querySnapshot.forEach((doc) => {
       highScores.value.push({
@@ -397,7 +397,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // multiplayer functions
 
-  const createGameRoom = async (user: User) => {
+  const createGameRoom = async (user: User): Promise<string> => {
     const gameRef = await addDoc(collection(db, "games"), {
       createdBy: { uid: user.uid, displayName: user.displayName },
       players: [{ uid: user.uid, displayName: user.displayName, willRestart: false }],
@@ -424,7 +424,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   });
   // };
 
-  const joinGameRoom = async (gameId: string, user: User) => {
+  const joinGameRoom = async (gameId: string, user: User): Promise<void> => {
     // const player = gameData.value!.players.find((p) => p.uid === auth.currentUser?.uid);
     const gameDocRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameDocRef);

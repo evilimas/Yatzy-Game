@@ -488,7 +488,10 @@ export const useFirebaseStore = defineStore("firebase", () => {
   });
 
   // place score and move to next turn function
-  const placeScoreAndNextTurn = async (combination: string | null, roomId: string) => {
+  const placeScoreAndNextTurn = async (
+    combination: string | null,
+    roomId: string
+  ): Promise<void> => {
     if (!gameData.value) return;
     const combo = combination as YatzyCombination;
     const playerIndex = gameData.value.players.findIndex(
@@ -519,9 +522,9 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // Dice functions
 
-  const rollDie = () => Math.floor(Math.random() * 6) + 1;
+  const rollDie = (): number => Math.floor(Math.random() * 6) + 1;
 
-  const rollDice = async (roomId?: string) => {
+  const rollDice = async (roomId?: string): Promise<void> => {
     if (!gameData.value || gameData.value.throwCount <= 0) return;
 
     const newDice = gameData.value.dice.map((die, i) =>
@@ -541,7 +544,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const holdDie = async (index: number, roomId?: string) => {
+  const holdDie = async (index: number, roomId?: string): Promise<void> => {
     if (!gameData.value) return;
     gameData.value.holdDie[index] = !gameData.value.holdDie[index];
 
@@ -558,14 +561,14 @@ export const useFirebaseStore = defineStore("firebase", () => {
   //   gameData.value.holdDie = [false, false, false, false, false];
 
   // };
-  const startGame = async (roomId: string) => {
+  const startGame = async (roomId: string): Promise<void> => {
     await updateDoc(doc(db, "games", roomId), {
       gameStarted: true,
       status: "playing",
     });
   };
 
-  const confirmRestart = async (roomId: string) => {
+  const confirmRestart = async (roomId: string): Promise<void> => {
     if (!gameData.value) return;
     const player = gameData.value.players.find((p) => p.uid === auth.currentUser?.uid);
     player!.willRestart = !player!.willRestart;
@@ -580,7 +583,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
     }
   };
 
-  const restartGame = async (roomId: string) => {
+  const restartGame = async (roomId: string): Promise<void> => {
     if (!gameData.value) return;
     {
       await updateDoc(doc(db, "games", roomId), {
@@ -598,7 +601,7 @@ export const useFirebaseStore = defineStore("firebase", () => {
 
   // gameroom chat / messages functions
 
-  const addRoomMessageToDB = async (message: string, gameId: string, user: User) => {
+  const addRoomMessageToDB = async (message: string, gameId: string, user: User): Promise<void> => {
     // const player: Player | undefined = gameData.value!.players.find((p) => p.uid === auth.currentUser?.uid);
     const gameDocRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameDocRef);
